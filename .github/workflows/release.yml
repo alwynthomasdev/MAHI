@@ -71,4 +71,4 @@ jobs:
             release/*/*.dmg
             release/*/*.dmg.blockmap
             release/*/*.AppImage
-            release/*/*.yml
+            release/*/latest*.yml

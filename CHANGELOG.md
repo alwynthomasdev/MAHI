@@ -6,6 +6,10 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- An Intel (x64) macOS installer alongside the Apple Silicon one.
+
 ## [1.0.1] - 2026-09-27
 
 ### Changed

@@ -25,8 +25,12 @@ nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
 mac:
+  # Separate Intel and Apple Silicon installers; latest-mac.yml lists both.
   target:
-    - dmg
+    - target: dmg
+      arch:
+        - x64
+        - arm64
   category: public.app-category.productivity
   icon: build/icon.png
 linux:
