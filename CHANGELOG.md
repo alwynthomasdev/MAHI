@@ -6,6 +6,13 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-09-27
+
+### Changed
+
+- The On Hold swimlane now runs full width along the bottom of the board, with
+  Scheduled, WIP and Done side by side above it.
+
 ## [1.0.0] - 2026-09-27
 
 The first release of MAHI (te reo Māori for work or task): a simple,
