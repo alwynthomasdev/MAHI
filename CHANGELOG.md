@@ -6,9 +6,15 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-09-27
+
 ### Added
 
 - An Intel (x64) macOS installer alongside the Apple Silicon one.
+
+### Fixed
+
+- Releases no longer include the stray `builder-debug.yml` file.
 
 ## [1.0.1] - 2026-09-27
 
