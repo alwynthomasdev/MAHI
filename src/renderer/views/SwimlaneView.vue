@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { sortTasks } from '@models/Filter';
-import { LANE_STATUSES, PRIORITIES, type Status, type Task } from '@models/Task';
+import { PRIORITIES, type Status, type Task } from '@models/Task';
 import { formatDue } from '@shared/dates';
 import { PRIORITY_COLOR, STATUS_COLOR } from '../lib/colors';
 import { useTasksStore } from '../stores/tasks';
 import PillSelect from '../components/PillSelect.vue';
 
-/** Scheduled · WIP · On Hold · Done, with native HTML5 drag-and-drop between lanes. */
+/**
+ * Scheduled · WIP · Done side by side, with On Hold as a full-width lane along
+ * the bottom. Native HTML5 drag-and-drop moves tasks between lanes.
+ */
 const tasks = useTasksStore();
 
+const LAYOUT: Status[] = ['Scheduled', 'WIP', 'Done', 'On Hold'];
+
 const lanes = computed(() =>
-  LANE_STATUSES.map((status) => ({
+  LAYOUT.map((status) => ({
     status,
+    wide: status === 'On Hold',
     items: sortTasks(
       tasks.items.filter((t) => t.status === status),
       { key: 'due', dir: 'asc' },
@@ -58,7 +64,7 @@ const archiveAll = async () => {
         v-for="lane in lanes"
         :key="lane.status"
         class="lane"
-        :class="{ over: overLane === lane.status }"
+        :class="{ over: overLane === lane.status, wide: lane.wide }"
         @dragover.prevent="overLane = lane.status"
         @dragleave.self="overLane = null"
         @drop.prevent="onDrop($event, lane.status)"
@@ -128,7 +134,8 @@ const archiveAll = async () => {
 .board {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  grid-template-rows: minmax(0, 1fr) minmax(170px, 32%);
   gap: 12px;
   overflow-x: auto;
   min-height: 0;
@@ -140,6 +147,9 @@ const archiveAll = async () => {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   min-height: 0;
+}
+.lane.wide {
+  grid-column: 1 / -1;
 }
 .lane.over {
   border-color: var(--accent);
@@ -177,6 +187,18 @@ const archiveAll = async () => {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+.lane.wide .cards {
+  flex-direction: row;
+  align-items: flex-start;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.lane.wide .task-card {
+  flex: 0 0 260px;
+}
+.lane.wide .drop-hint {
+  flex: 1;
 }
 .task-card {
   padding: 10px 11px;

@@ -6,9 +6,6 @@ export type Priority = (typeof PRIORITIES)[number];
 export const STATUSES = ['Scheduled', 'WIP', 'On Hold', 'Done', 'Archive'] as const;
 export type Status = (typeof STATUSES)[number];
 
-/** Statuses shown as swimlane columns (Archive never appears there). */
-export const LANE_STATUSES: Status[] = ['Scheduled', 'WIP', 'On Hold', 'Done'];
-
 export const DEFAULT_PRIORITY: Priority = 'Medium';
 export const DEFAULT_STATUS: Status = 'Scheduled';
 
