@@ -1,0 +1,74 @@
+name: Release
+
+# Fires when a vX.Y.Z tag is pushed (the git-manager agent does this on an
+# approved release — see .claude/agents/git-manager.md).
+# Creates a draft GitHub Release whose notes are the matching CHANGELOG.md
+# section, then builds the installer on each OS and attaches them to it.
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  notes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Need history + tags to work out the previous release for the
+          # "Full changelog" compare link.
+          fetch-depth: 0
+      - name: Build release notes from CHANGELOG.md
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          awk -v ver="$version" '
+            $0 ~ "^## \\[" ver "\\]" { grab = 1; next }
+            grab && /^## \[/            { exit }
+            grab                        { print }
+          ' CHANGELOG.md | sed -e '/./,$!d' > notes.md
+          if [ ! -s notes.md ]; then
+            echo "No CHANGELOG.md section found for $version" >&2
+            echo "Release $GITHUB_REF_NAME. See CHANGELOG.md for details." > notes.md
+          fi
+          prev="$(git tag --list 'v*' --sort=-version:refname \
+                    | grep -vx "$GITHUB_REF_NAME" | head -n1)"
+          if [ -n "$prev" ]; then
+            printf '\n**Full changelog**: %s/%s/compare/%s...%s\n' \
+              "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$prev" "$GITHUB_REF_NAME" >> notes.md
+          fi
+          echo "----- release notes -----"
+          cat notes.md
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          body_path: notes.md
+
+  dist:
+    needs: notes
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run dist
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          fail_on_unmatched_files: false
+          files: |
+            release/*/*.exe
+            release/*/*.exe.blockmap
+            release/*/*.dmg
+            release/*/*.dmg.blockmap
+            release/*/*.AppImage
+            release/*/*.yml

@@ -1,0 +1,37 @@
+I need an application built in electron that
+- Tracks "Tasks", each task will
+ - Title, which is required
+ - Optional detaild description, shown if i open the task an edit and save it
+ - Have a priority , Lowest, Low, Medium, High, Highest, default Medium
+ - Have a status, Scheduled, WIP, Done, Archive, On Hold, Default Scheduled
+ - Due Date, default to the current date
+ - Labels for categorising
+- Need two views
+ - A Today View, that just shows todays tasks, or overdue tasks that are not done or archived
+  - Need a quick pospopne drop down, tommorow, 3 days, next monday, 1 week, 1 month
+  - need to be able to change priority and status in this view 
+ - A list view of everything not archived
+    - need to be able to change priority and status in this view 
+    - Support a search/filter function here, search free text against title, plus status, labels, priority and order by capability
+ - Archive list view
+ - Swimlane view with drag and drop functionality
+  - Scheduled WIP and done will be on there plus on hold, archive will not appear
+  - Need a quick archive button for done tasks
+- The add task needs to be a seperate small persistent window,
+    - A button needs to exist in the top right of the main app window
+    - this window is permenent and persistent unless closed
+    - only has a title option and defaults everything else
+    - every time a task is added, it stays open for the next
+- Tasks are stored in a local data folder, can be changed in settings page
+ - stored as json individual json files
+ - default folder is the users folder with the app name MAHI
+ - Export feature as collection of json objects, this feature needs to be able to select which statuses to export
+ - Import by json, same format as export
+ - Import/Export in the settings
+- Should be able to delete tasks and there will be a recycle bin
+- Needs to support github release workflows
+ - A subagent needs to help tag and draft release
+ - The app needs to check for new versions of the app when if first opens, download and install it
+ - There needs to be a check for updates in the settings
+- Style, the workd MAHI is from Maori for task, want a light dark and system mode, changeable in settings
+- This is a simplified version of PTAH ... see "C:\repositories\Ptah"

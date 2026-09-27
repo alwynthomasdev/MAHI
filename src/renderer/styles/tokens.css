@@ -1,0 +1,89 @@
+/* Theme tokens. Light values on :root; dark overrides under [data-theme='dark'].
+   The settings store sets data-theme on <html>. Layout and scale follow PTAH;
+   MAHI's accent is pounamu (greenstone) green. */
+
+:root {
+  --sans: -apple-system, 'Segoe UI', Inter, Helvetica, Arial, sans-serif;
+  --mono: 'SF Mono', 'JetBrains Mono', Consolas, Menlo, monospace;
+
+  /* core — light */
+  --bg: #f3f4f1;
+  --surface: #ffffff;
+  --surface-2: #e9ebe6;
+  --border: #d8dcd4;
+  --text: #1f2421;
+  --text-dim: #626a64;
+  --text-faint: #949b95;
+  --accent: #1f7a5c;
+  --accent-dim: #8cc4ae;
+  --accent-contrast: #ffffff;
+
+  /* status — identical in both themes */
+  --scheduled: #4f8ff0;
+  --wip: #c9a227;
+  --onhold: #b4783a;
+  --done: #3fa877;
+  --archive: #8b7bb0;
+
+  /* priority — identical in both themes */
+  --p-lowest: #6b7280;
+  --p-low: #4f8ff0;
+  --p-medium: #c9a227;
+  --p-high: #d9773f;
+  --p-highest: #d9483f;
+
+  --status-fg: #ffffff;
+  --status-fg-wip: #1a1e25;
+
+  --overlay: rgba(0, 0, 0, 0.4);
+
+  --danger: #d64545;
+  --ok: #2f9e44;
+  --warn: #d9820b;
+
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 8px;
+  --radius-pill: 999px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --gap: var(--space-3);
+
+  --fs-2xs: 10.5px;
+  --fs-xs: 11.5px;
+  --fs-sm: 12px;
+  --fs-md: 12.5px;
+  --fs-base: 13.5px;
+
+  --z-sticky: 10;
+  --z-dropdown: 40;
+  --z-overlay: 50;
+  --z-modal: 60;
+
+  --hover-bg: var(--surface-2);
+  --focus-ring-color: var(--accent-dim);
+  --opacity-disabled: 0.5;
+}
+
+:root[data-theme='dark'] {
+  --bg: #13171a;
+  --surface: #192024;
+  --surface-2: #1f272b;
+  --border: #2a3438;
+  --text: #e4ebe8;
+  --text-dim: #8b9a95;
+  --text-faint: #5a6864;
+  --accent: #3fb68b;
+  --accent-dim: #2b6b55;
+  --accent-contrast: #0e1a15;
+
+  --danger: #e06c6c;
+  --ok: #4cb963;
+  --warn: #e0a13c;
+
+  --hover-bg: #232d31;
+}

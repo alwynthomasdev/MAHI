@@ -1,0 +1,14 @@
+node_modules/
+dist/
+dist-electron/
+release/
+*.log
+.DS_Store
+.vscode/*
+!.vscode/launch.json
+!.vscode/extensions.json
+.claude/*
+!.claude/agents/
+!.claude/skills/
+coverage/
+!specs/
