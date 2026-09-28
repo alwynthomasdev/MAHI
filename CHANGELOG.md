@@ -6,6 +6,14 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-28
+
+### Added
+
+- An "All / Today & overdue" toggle in the Swimlane header. Today & overdue
+  narrows every lane to tasks due today or earlier. The board opens on All
+  each time the app starts.
+
 ## [1.0.2] - 2026-09-27
 
 ### Added
