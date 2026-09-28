@@ -202,23 +202,6 @@ p {
   margin: 8px 0 4px;
   gap: 8px;
 }
-.seg {
-  display: inline-flex;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-.seg button {
-  border: none;
-  border-radius: 0;
-  background: transparent;
-  padding: 6px 16px;
-}
-.seg button.on {
-  background: var(--accent);
-  color: var(--accent-contrast);
-  font-weight: 600;
-}
 .checks {
   display: flex;
   flex-wrap: wrap;

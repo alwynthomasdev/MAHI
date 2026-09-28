@@ -15,12 +15,19 @@ const tasks = useTasksStore();
 
 const LAYOUT: Status[] = ['Scheduled', 'WIP', 'Done', 'On Hold'];
 
+const SCOPES = [
+  { value: 'all', label: 'All' },
+  { value: 'today', label: 'Today & overdue' },
+] as const;
+
+const inScope = (t: Task) => tasks.swimlaneScope === 'all' || t.due <= tasks.today;
+
 const lanes = computed(() =>
   LAYOUT.map((status) => ({
     status,
     wide: status === 'On Hold',
     items: sortTasks(
-      tasks.items.filter((t) => t.status === status),
+      tasks.items.filter((t) => t.status === status && inScope(t)),
       { key: 'due', dir: 'asc' },
     ),
   })),
@@ -58,6 +65,18 @@ const archiveAll = async () => {
   <section class="board-view">
     <header class="view-head">
       <h2>Swimlanes</h2>
+      <div class="seg" role="radiogroup" aria-label="Show">
+        <button
+          v-for="s in SCOPES"
+          :key="s.value"
+          role="radio"
+          :aria-checked="tasks.swimlaneScope === s.value"
+          :class="{ on: tasks.swimlaneScope === s.value }"
+          @click="tasks.swimlaneScope = s.value"
+        >
+          {{ s.label }}
+        </button>
+      </div>
     </header>
     <div class="board scroll-thin">
       <div

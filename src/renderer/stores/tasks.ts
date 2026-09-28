@@ -19,6 +19,8 @@ export const useTasksStore = defineStore('tasks', {
     /** List view filter / sort. */
     filter: {} as TaskFilter,
     sort: { ...DEFAULT_SORT } as TaskSort,
+    /** Swimlane view: every task, or only those due today or earlier. */
+    swimlaneScope: 'all' as 'all' | 'today',
     /** Bumped by `refreshToday` so `today` re-evaluates across midnight. */
     today: todayDate(),
     /** The task open in the edit dialog (rendered once, by App.vue). */
