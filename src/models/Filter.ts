@@ -77,9 +77,25 @@ export function filterAndSort(tasks: Task[], filter: TaskFilter, sort: TaskSort)
   );
 }
 
+/** Still to do: not Done / Archive. */
+export function isOpenTask(task: Task): boolean {
+  return task.status !== 'Done' && task.status !== 'Archive';
+}
+
 /** Today view: due today or earlier, and not Done / Archive. */
 export function isTodayTask(task: Task, today: string): boolean {
-  return task.due <= today && task.status !== 'Done' && task.status !== 'Archive';
+  return task.due <= today && isOpenTask(task);
+}
+
+/** Tasks bucketed by due date (`YYYY-MM-DD`), input order kept within a day. */
+export function groupByDue(tasks: Task[]): Map<string, Task[]> {
+  const map = new Map<string, Task[]>();
+  for (const t of tasks) {
+    const day = map.get(t.due);
+    if (day) day.push(t);
+    else map.set(t.due, [t]);
+  }
+  return map;
 }
 
 /** Every distinct label across tasks (case-insensitive de-dupe), sorted. */

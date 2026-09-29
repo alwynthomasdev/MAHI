@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { addToDate, daysUntil, formatDue, isDateString, nextMonday } from '@shared/dates';
+import {
+  addToDate,
+  daysUntil,
+  formatDue,
+  isDateString,
+  monthWeeks,
+  nextMonday,
+  startOfMonth,
+  startOfWeek,
+  weekDays,
+} from '@shared/dates';
 
 describe('dates', () => {
   it('validates YYYY-MM-DD strictly', () => {
@@ -26,5 +36,33 @@ describe('dates', () => {
     expect(formatDue('2026-09-27', now)).toEqual({ text: 'Today', tone: 'today' });
     expect(formatDue('2026-09-28', now)).toEqual({ text: 'Tomorrow', tone: 'soon' });
     expect(formatDue('2026-09-24', now)).toEqual({ text: '3 days overdue', tone: 'overdue' });
+  });
+
+  it('weeks start on Monday', () => {
+    expect(startOfWeek('2026-09-30')).toBe('2026-09-28'); // Wednesday
+    expect(startOfWeek('2026-09-28')).toBe('2026-09-28'); // Monday
+    expect(startOfWeek('2026-10-04')).toBe('2026-09-28'); // Sunday
+    expect(startOfWeek('2027-01-01')).toBe('2026-12-28'); // across a year
+    expect(weekDays('2026-09-30')).toEqual([
+      '2026-09-28',
+      '2026-09-29',
+      '2026-09-30',
+      '2026-10-01',
+      '2026-10-02',
+      '2026-10-03',
+      '2026-10-04',
+    ]);
+  });
+
+  it('month grid covers the month in whole weeks', () => {
+    expect(startOfMonth('2026-09-30')).toBe('2026-09-01');
+    const sep = monthWeeks('2026-09-15');
+    expect(sep).toHaveLength(5);
+    expect(sep[0][0]).toBe('2026-08-31');
+    expect(sep[4][6]).toBe('2026-10-04');
+    // Feb 2027 starts on a Monday and ends on a Sunday: exactly four weeks.
+    expect(monthWeeks('2027-02-10')).toHaveLength(4);
+    // Aug 2026 starts on a Saturday: six weeks.
+    expect(monthWeeks('2026-08-31')).toHaveLength(6);
   });
 });

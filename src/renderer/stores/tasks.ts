@@ -3,6 +3,8 @@ import {
   DEFAULT_SORT,
   allLabels,
   filterAndSort,
+  groupByDue,
+  isOpenTask,
   isTodayTask,
   sortTasks,
   type TaskFilter,
@@ -21,6 +23,9 @@ export const useTasksStore = defineStore('tasks', {
     sort: { ...DEFAULT_SORT } as TaskSort,
     /** Swimlane view: every task, or only those due today or earlier. */
     swimlaneScope: 'all' as 'all' | 'today',
+    /** Calendar view: which layout, and the day it is centred on. */
+    calendarMode: 'month' as 'month' | 'week' | 'day',
+    calendarDate: todayDate(),
     /** Bumped by `refreshToday` so `today` re-evaluates across midnight. */
     today: todayDate(),
     /** The task open in the edit dialog (rendered once, by App.vue). */
@@ -44,6 +49,10 @@ export const useTasksStore = defineStore('tasks', {
         state.filter,
         state.sort,
       );
+    },
+    /** Calendar: open (not Done/Archive) tasks by due date, each day sorted by priority. */
+    openByDue(state): Map<string, Task[]> {
+      return groupByDue(sortTasks(state.items.filter(isOpenTask), { key: 'priority', dir: 'desc' }));
     },
     archived(state): Task[] {
       return sortTasks(

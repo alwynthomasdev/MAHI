@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { allLabels, filterAndSort, isTodayTask, sortTasks } from '@models/Filter';
+import {
+  allLabels,
+  filterAndSort,
+  groupByDue,
+  isOpenTask,
+  isTodayTask,
+  sortTasks,
+} from '@models/Filter';
 import { createTask, type Task } from '@models/Task';
 
 function task(id: string, over: Partial<Task>): Task {
@@ -44,6 +51,15 @@ describe('isTodayTask', () => {
     const today = '2026-09-27';
     expect(tasks.filter((t) => isTodayTask(t, today)).map((t) => t.id)).toEqual(['Bravo report']);
     expect(isTodayTask(task('x', { due: today }), today)).toBe(true);
+  });
+});
+
+describe('isOpenTask / groupByDue', () => {
+  it('buckets open tasks by due date', () => {
+    const byDay = groupByDue(tasks.filter(isOpenTask));
+    expect([...byDay.keys()]).toEqual(['2026-09-30', '2026-09-25']);
+    expect(byDay.get('2026-09-27')).toBeUndefined();
+    expect(groupByDue(tasks).get('2026-09-27')?.map((t) => t.id)).toEqual(['charlie', 'delta']);
   });
 });
 

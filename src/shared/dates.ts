@@ -90,3 +90,34 @@ export function formatDue(value: string, now: Date = new Date()): { text: string
   }
   return { text, tone };
 }
+
+/** The Monday on or before `value` (weeks run Monday–Sunday). */
+export function startOfWeek(value: string): string {
+  const d = parseDate(value);
+  return addToDate(value, { days: -((d.getDay() + 6) % 7) });
+}
+
+/** The 1st of `value`'s month. */
+export function startOfMonth(value: string): string {
+  return `${value.slice(0, 8)}01`;
+}
+
+/** Monday–Sunday of the week containing `value`. */
+export function weekDays(value: string): string[] {
+  const start = startOfWeek(value);
+  return Array.from({ length: 7 }, (_, i) => addToDate(start, { days: i }));
+}
+
+/**
+ * Whole Monday–Sunday weeks covering `value`'s month (5 or 6 rows), so a month
+ * grid can pad with the neighbouring months' days.
+ */
+export function monthWeeks(value: string): string[][] {
+  const first = startOfMonth(value);
+  const last = addToDate(addToDate(first, { months: 1 }), { days: -1 });
+  const weeks: string[][] = [];
+  for (let day = startOfWeek(first); day <= last; day = addToDate(day, { days: 7 })) {
+    weeks.push(weekDays(day));
+  }
+  return weeks;
+}
