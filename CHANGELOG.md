@@ -6,6 +6,25 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-09-30
+
+A new Calendar tab for seeing what's due and when.
+
+### Added
+
+- A Calendar tab (between Swimlanes and Archive) with Month, Week and Day
+  views. Month is the default. It shows only open tasks, so Done and Archive
+  are left out.
+- Month view: a Monday-first grid with a task count on each day. Past days
+  that still have open tasks are shown in red. Click a day to open it.
+- Week view: a lane for each day, with swimlane-style cards where you can set
+  priority and status inline. Drag a card to another day to change its due
+  date.
+- Day view: a Today-style task list with Postpone. When the day is today,
+  overdue tasks are listed separately below.
+- Prev / Today / Next navigation. The chosen view and date are kept when you
+  switch tabs.
+
 ## [1.1.0] - 2026-09-28
 
 ### Added

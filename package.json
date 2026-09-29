@@ -1,6 +1,6 @@
 {
   "name": "mahi",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "MAHI — a simple local-first task tracker. Every task is a JSON file on disk.",
   "author": "Alwyn Thomas <alwynthomas@live.co.uk>",
   "license": "MIT",
