@@ -6,6 +6,29 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-10-02
+
+Effort on the Swimlanes board, and a change to which tasks count towards a
+day's effort.
+
+### Added
+
+- The Swimlane header shows today's effort against the daily limit when the
+  board is on "Today & overdue": green, amber above 70% of the limit, and red
+  above the limit. It is hidden on "All".
+- An inline effort pill on each swimlane card, next to priority, so effort can
+  be seen and changed on the board.
+
+### Changed
+
+- Which tasks count towards a day's effort: Scheduled, WIP and Done count; On
+  Hold and Archive do not. Previously only open tasks (Scheduled, WIP and On
+  Hold) counted. This applies to Today, the Calendar Month, Week and Day
+  views, and Swimlanes.
+- Today's total is everything counted that is due today, Done included, plus
+  overdue work still to do. Overdue tasks that are already Done stay on the
+  day they were due.
+
 ## [1.3.0] - 2026-10-02
 
 Effort levels for tasks, and a daily effort limit that shows when a day is
