@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { totalEffort } from '@models/Effort';
 import { useTasksStore } from '../../stores/tasks';
+import EffortBadge from '../EffortBadge.vue';
 import TaskTable from '../TaskTable.vue';
 import SnoozeMenu from '../SnoozeMenu.vue';
 
 /**
  * The open tasks due on the selected day, as in the Today tab. On today
- * itself, overdue tasks follow in their own list so nothing is hidden.
+ * itself, overdue tasks follow in their own list so nothing is hidden. The
+ * effort badge counts only the tasks due on this day, as in Month and Week.
  */
 const tasks = useTasksStore();
 
@@ -24,6 +27,7 @@ const overdue = computed(() =>
       <template v-if="overdue.length">
         · <span class="overdue">{{ overdue.length }} overdue</span></template
       >
+      <EffortBadge :total="totalEffort(dayTasks)" />
     </p>
     <TaskTable
       :tasks="dayTasks"
@@ -31,6 +35,7 @@ const overdue = computed(() =>
       @open="tasks.open"
       @priority="(t, v) => tasks.update(t.id, { priority: v })"
       @status="(t, v) => tasks.update(t.id, { status: v })"
+      @effort="(t, v) => tasks.update(t.id, { effort: v })"
     >
       <template #actions="{ task }">
         <SnoozeMenu @snooze="(due) => tasks.update(task.id, { due })" />
@@ -44,6 +49,7 @@ const overdue = computed(() =>
         @open="tasks.open"
         @priority="(t, v) => tasks.update(t.id, { priority: v })"
         @status="(t, v) => tasks.update(t.id, { status: v })"
+      @effort="(t, v) => tasks.update(t.id, { effort: v })"
       >
         <template #actions="{ task }">
           <SnoozeMenu @snooze="(due) => tasks.update(task.id, { due })" />
@@ -56,6 +62,10 @@ const overdue = computed(() =>
 <style scoped>
 .summary {
   margin: 0 0 10px;
+}
+.summary .effort {
+  margin-left: 8px;
+  vertical-align: middle;
 }
 .overdue {
   color: var(--p-highest);

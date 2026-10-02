@@ -8,6 +8,7 @@ import type { Result } from './result';
 export const IPC = {
   configGet: 'config:get',
   configSetTheme: 'config:setTheme',
+  configSetEffortLimit: 'config:setEffortLimit',
   configPickDataDir: 'config:pickDataDir',
   configResetDataDir: 'config:resetDataDir',
   configOpenDataDir: 'config:openDataDir',
@@ -42,6 +43,8 @@ export type Theme = 'light' | 'dark' | 'system';
 export interface AppConfig {
   dataDir: string;
   theme: Theme;
+  /** Effort points a day can carry before it is flagged as over the limit. */
+  effortLimit: number;
 }
 
 export interface UpdateInfo {
@@ -61,6 +64,7 @@ export interface MahiApi {
   config: {
     get(): Promise<Result<AppConfig>>;
     setTheme(theme: Theme): Promise<Result<AppConfig>>;
+    setEffortLimit(limit: number): Promise<Result<AppConfig>>;
     /** Shows a folder picker; resolves `null` when cancelled. */
     pickDataDir(): Promise<Result<AppConfig | null>>;
     resetDataDir(): Promise<Result<AppConfig>>;

@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { totalEffort } from '@models/Effort';
 import { monthWeeks, parseDate } from '@shared/dates';
 import { useTasksStore } from '../../stores/tasks';
+import EffortBadge from '../EffortBadge.vue';
 
-/** A month grid showing how many open tasks fall on each day; click a day to open it. */
+/**
+ * A month grid showing how many open tasks fall on each day, and their effort
+ * against the daily limit; click a day to open it.
+ */
 const emit = defineEmits<{ pick: [day: string] }>();
 const tasks = useTasksStore();
 
@@ -13,6 +18,7 @@ const month = computed(() => tasks.calendarDate.slice(0, 7));
 const weeks = computed(() => monthWeeks(tasks.calendarDate));
 
 const countOn = (day: string) => tasks.openByDue.get(day)?.length ?? 0;
+const effortOn = (day: string) => totalEffort(tasks.openByDue.get(day) ?? []);
 </script>
 
 <template>
@@ -34,7 +40,10 @@ const countOn = (day: string) => tasks.openByDue.get(day)?.length ?? 0;
           :title="parseDate(day).toLocaleDateString(undefined, { dateStyle: 'full' })"
           @click="emit('pick', day)"
         >
-          <span class="num">{{ Number(day.slice(8)) }}</span>
+          <span class="top">
+            <span class="num">{{ Number(day.slice(8)) }}</span>
+            <EffortBadge v-if="effortOn(day)" :total="effortOn(day)" compact />
+          </span>
           <span v-if="countOn(day)" class="count">
             <b>{{ countOn(day) }}</b> task{{ countOn(day) === 1 ? '' : 's' }}
           </span>
@@ -89,6 +98,12 @@ const countOn = (day: string) => tasks.openByDue.get(day)?.length ?? 0;
 }
 .cell.outside .num {
   color: var(--text-faint);
+}
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
 }
 .num {
   font-family: var(--mono);

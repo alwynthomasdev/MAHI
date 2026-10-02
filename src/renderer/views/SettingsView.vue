@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { MAX_EFFORT_LIMIT, isEffortLimit } from '@models/Effort';
 import { STATUSES, type Status } from '@models/Task';
 import type { Theme, UpdateInfo } from '@shared/ipc';
 import { call, mahi } from '../api';
@@ -21,6 +22,7 @@ const version = ref('');
 const exportStatuses = ref<Status[]>(['Scheduled', 'WIP', 'On Hold', 'Done']);
 const ioMsg = ref<string | null>(null);
 const dirMsg = ref<string | null>(null);
+const limitMsg = ref<string | null>(null);
 const updateMsg = ref<string | null>(null);
 const checking = ref(false);
 const error = ref<string | null>(null);
@@ -31,6 +33,25 @@ onMounted(async () => {
 
 function fail(e: unknown) {
   error.value = e instanceof Error ? e.message : String(e);
+}
+
+/** The lowest daily total that shows amber: the first whole number over 70% of the limit. */
+const amberFrom = computed(() => Math.floor((settings.effortLimit * 7) / 10) + 1);
+
+async function setLimit(e: Event) {
+  const el = e.target as HTMLInputElement;
+  const limit = Number(el.value);
+  error.value = limitMsg.value = null;
+  if (!isEffortLimit(limit)) {
+    limitMsg.value = `Enter a whole number from 1 to ${MAX_EFFORT_LIMIT}.`;
+    el.value = String(settings.effortLimit);
+    return;
+  }
+  try {
+    await settings.setEffortLimit(limit);
+  } catch (err) {
+    fail(err);
+  }
 }
 
 async function pickDir() {
@@ -125,6 +146,30 @@ async function checkUpdates() {
     </div>
 
     <div class="card block">
+      <h3>Daily effort</h3>
+      <p class="muted">
+        Each open task adds its effort to the day it is due: Easy 1, Moderate 2, Hard 3. Today and
+        the Calendar flag a day amber above 70% of this limit and red above it. It is only a guide —
+        nothing is blocked.
+      </p>
+      <label class="row limit">
+        <span>Daily limit</span>
+        <input
+          type="number"
+          min="1"
+          :max="MAX_EFFORT_LIMIT"
+          step="1"
+          :value="settings.effortLimit"
+          @change="setLimit"
+        />
+      </label>
+      <p class="muted small">
+        Amber from {{ amberFrom }}, red from {{ settings.effortLimit + 1 }}.
+      </p>
+      <p v-if="limitMsg" class="err">{{ limitMsg }}</p>
+    </div>
+
+    <div class="card block">
       <h3>Data folder</h3>
       <p class="muted">Each task is stored as its own JSON file in this folder.</p>
       <code class="path">{{ settings.dataDir }}</code>
@@ -201,6 +246,13 @@ p {
 .actions {
   margin: 8px 0 4px;
   gap: 8px;
+}
+.limit {
+  margin: 8px 0 4px;
+  gap: 10px;
+}
+.limit input {
+  width: 80px;
 }
 .checks {
   display: flex;

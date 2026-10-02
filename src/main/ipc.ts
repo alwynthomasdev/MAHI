@@ -1,6 +1,7 @@
 import { promises as fs } from 'node:fs';
 import { app, BrowserWindow, dialog, ipcMain, nativeTheme, shell } from 'electron';
 import { AppContext } from '@core/AppContext';
+import { MAX_EFFORT_LIMIT, isEffortLimit } from '@models/Effort';
 import { isStatus, type NewTaskInput, type Status, type TaskPatch } from '@models/Task';
 import { todayDate } from '@shared/dates';
 import { IPC, type AppConfig, type Theme } from '@shared/ipc';
@@ -53,6 +54,15 @@ export async function registerIpc(initial: AppConfig): Promise<void> {
       }
       nativeTheme.themeSource = theme;
       config = await saveConfig({ ...config, theme });
+      return config;
+    }),
+  );
+  ipcMain.handle(IPC.configSetEffortLimit, (_e, limit: number) =>
+    tryResult(async () => {
+      if (!isEffortLimit(limit)) {
+        throw new Error(`Daily effort limit must be a whole number from 1 to ${MAX_EFFORT_LIMIT}.`);
+      }
+      config = await saveConfig({ ...config, effortLimit: limit });
       return config;
     }),
   );

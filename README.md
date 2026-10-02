@@ -18,10 +18,14 @@ task tracker (Electron + Vue 3), a simplified sibling of
 - **Add task window**: the **+ Add task** button (top right, or Ctrl+N) opens a
   small always-on-top window. Type a title and press Enter; it stays open for
   the next one. Everything else takes its default (Medium, Scheduled, due today).
-- **Settings**: light / dark / system theme, data folder, import / export
-  (choose which statuses to export), and **Check for updates**.
+- **Effort**: give a task an effort of None (0), Easy (1), Moderate (2) or
+  Hard (3). Today and every Calendar day show the total for their open tasks
+  against a daily limit (12 by default): green, amber above 70% of the limit,
+  red above it. It is a guide to whether a day is overloaded; nothing is blocked.
+- **Settings**: light / dark / system theme, daily effort limit, data folder,
+  import / export (choose which statuses to export), and **Check for updates**.
 
-Click any task to edit its title, description, priority, status, due date and labels.
+Click any task to edit its title, description, priority, status, effort, due date and labels.
 
 ## Data on disk
 
@@ -42,6 +46,7 @@ A task file:
   "description": "",
   "priority": "Medium",
   "status": "Scheduled",
+  "effort": "None",
   "due": "2026-09-27",
   "labels": ["admin"],
   "created": "2026-09-27T09:00:00.000Z",

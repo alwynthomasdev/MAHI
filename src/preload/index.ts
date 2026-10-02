@@ -9,6 +9,7 @@ const api: MahiApi = {
   config: {
     get: () => ipcRenderer.invoke(IPC.configGet),
     setTheme: (theme) => ipcRenderer.invoke(IPC.configSetTheme, theme),
+    setEffortLimit: (limit) => ipcRenderer.invoke(IPC.configSetEffortLimit, limit),
     pickDataDir: () => ipcRenderer.invoke(IPC.configPickDataDir),
     resetDataDir: () => ipcRenderer.invoke(IPC.configResetDataDir),
     openDataDir: () => ipcRenderer.invoke(IPC.configOpenDataDir),

@@ -19,6 +19,7 @@ const tasks = useTasksStore();
       @open="tasks.open"
       @priority="(t, v) => tasks.update(t.id, { priority: v })"
       @status="(t, v) => tasks.update(t.id, { status: v })"
+      @effort="(t, v) => tasks.update(t.id, { effort: v })"
     />
   </section>
 </template>

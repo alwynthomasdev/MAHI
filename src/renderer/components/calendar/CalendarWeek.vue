@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { PRIORITIES, STATUSES, type Task } from '@models/Task';
+import { totalEffort } from '@models/Effort';
+import { EFFORTS, PRIORITIES, STATUSES, type Task } from '@models/Task';
 import { parseDate, weekDays } from '@shared/dates';
-import { PRIORITY_COLOR, STATUS_COLOR } from '../../lib/colors';
+import { EFFORT_COLOR, PRIORITY_COLOR, STATUS_COLOR } from '../../lib/colors';
 import { useTasksStore } from '../../stores/tasks';
+import EffortBadge from '../EffortBadge.vue';
 import PillSelect from '../PillSelect.vue';
 
 /**
- * One lane per day, Monday–Sunday. Dragging a card to another day moves its
- * due date there (native HTML5 drag-and-drop, as in the Swimlane view).
+ * One lane per day, Monday–Sunday, headed by the day's effort against the
+ * daily limit. Dragging a card to another day moves its due date there
+ * (native HTML5 drag-and-drop, as in the Swimlane view).
  */
 const emit = defineEmits<{ pick: [day: string] }>();
 const tasks = useTasksStore();
@@ -16,11 +19,13 @@ const tasks = useTasksStore();
 const lanes = computed(() =>
   weekDays(tasks.calendarDate).map((day) => {
     const d = parseDate(day);
+    const items = tasks.openByDue.get(day) ?? [];
     return {
       day,
       weekday: d.toLocaleDateString(undefined, { weekday: 'short' }),
       date: d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' }),
-      items: tasks.openByDue.get(day) ?? [],
+      items,
+      effort: totalEffort(items),
     };
   }),
 );
@@ -65,6 +70,7 @@ async function onDrop(e: DragEvent, due: string) {
         <span class="weekday">{{ lane.weekday }}</span>
         <span class="date">{{ lane.date }}</span>
         <span class="spacer" />
+        <EffortBadge v-if="lane.effort" :total="lane.effort" compact />
         <span class="count" :class="{ late: lane.day < tasks.today && lane.items.length }">{{
           lane.items.length
         }}</span>
@@ -98,6 +104,14 @@ async function onDrop(e: DragEvent, due: string) {
               :colors="STATUS_COLOR"
               label="Status"
               @update:model-value="(v) => tasks.update(t.id, { status: v })"
+            />
+            <PillSelect
+              :model-value="t.effort"
+              :options="EFFORTS"
+              :colors="EFFORT_COLOR"
+              label="Effort"
+              caption="Effort"
+              @update:model-value="(v) => tasks.update(t.id, { effort: v })"
             />
           </div>
         </article>

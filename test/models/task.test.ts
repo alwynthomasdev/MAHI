@@ -12,10 +12,15 @@ describe('createTask', () => {
       description: '',
       priority: 'Medium',
       status: 'Scheduled',
+      effort: 'None',
       due: '2026-09-27',
       labels: [],
     });
     expect(t.created).toBe(t.updated);
+  });
+
+  it('keeps a valid effort', () => {
+    expect(createTask({ title: 'A', effort: 'Hard' }, 'a', NOW).effort).toBe('Hard');
   });
 
   it('requires a title', () => {
@@ -29,7 +34,12 @@ describe('applyPatch', () => {
   it('validates enums and dates', () => {
     expect(() => applyPatch(base, { priority: 'Urgent' as never })).toThrow(/priority/);
     expect(() => applyPatch(base, { status: 'Nope' as never })).toThrow(/status/);
+    expect(() => applyPatch(base, { effort: 'Huge' as never })).toThrow(/effort/);
     expect(() => applyPatch(base, { due: '2026-02-30' })).toThrow(/due/);
+  });
+
+  it('sets effort', () => {
+    expect(applyPatch(base, { effort: 'Moderate' }).effort).toBe('Moderate');
   });
 
   it('stamps updated and normalizes labels', () => {
@@ -43,13 +53,23 @@ describe('applyPatch', () => {
 
 describe('normalizeTask', () => {
   it('falls back to defaults on bad values', () => {
-    const t = normalizeTask({ title: 'X', priority: 'bogus', status: 7, due: 'soon' }, 'fb', NOW);
+    const t = normalizeTask(
+      { title: 'X', priority: 'bogus', status: 7, effort: 3, due: 'soon' },
+      'fb',
+      NOW,
+    );
     expect(t).toMatchObject({
       id: 'fb',
       priority: 'Medium',
       status: 'Scheduled',
+      effort: 'None',
       due: '2026-09-27',
     });
+  });
+
+  it('gives tasks saved before effort existed no effort', () => {
+    expect(normalizeTask({ title: 'Old' }, 'fb', NOW).effort).toBe('None');
+    expect(normalizeTask({ title: 'New', effort: 'Easy' }, 'fb', NOW).effort).toBe('Easy');
   });
 
   it('keeps a valid id and deletedAt', () => {

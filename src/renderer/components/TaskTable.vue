@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { PRIORITIES, STATUSES, type Priority, type Status, type Task } from '@models/Task';
+import {
+  EFFORTS,
+  PRIORITIES,
+  STATUSES,
+  type Effort,
+  type Priority,
+  type Status,
+  type Task,
+} from '@models/Task';
 import { formatDue } from '@shared/dates';
-import { PRIORITY_COLOR, STATUS_COLOR } from '../lib/colors';
+import { EFFORT_COLOR, PRIORITY_COLOR, STATUS_COLOR } from '../lib/colors';
 import PillSelect from './PillSelect.vue';
 
 /**
- * The shared task list used by Today, List and Archive. Priority and status
- * are editable inline; clicking a row opens it. The `actions` slot adds
+ * The shared task list used by Today, List and Archive. Priority, status and
+ * effort are editable inline; clicking a row opens it. The `actions` slot adds
  * per-row buttons (postpone, delete, …).
  */
 defineProps<{ tasks: Task[]; empty?: string }>();
@@ -14,6 +22,7 @@ const emit = defineEmits<{
   open: [task: Task];
   priority: [task: Task, value: Priority];
   status: [task: Task, value: Status];
+  effort: [task: Task, value: Effort];
 }>();
 </script>
 
@@ -50,6 +59,14 @@ const emit = defineEmits<{
         :colors="STATUS_COLOR"
         label="Status"
         @update:model-value="(v) => emit('status', t, v)"
+      />
+      <PillSelect
+        :model-value="t.effort"
+        :options="EFFORTS"
+        :colors="EFFORT_COLOR"
+        label="Effort"
+        caption="Effort"
+        @update:model-value="(v) => emit('effort', t, v)"
       />
       <span class="actions" @click.stop><slot name="actions" :task="t" /></span>
     </div>

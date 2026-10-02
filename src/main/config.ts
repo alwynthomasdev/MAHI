@@ -2,11 +2,12 @@ import { promises as fs } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { app } from 'electron';
+import { DEFAULT_EFFORT_LIMIT, isEffortLimit } from '@models/Effort';
 import type { AppConfig } from '@shared/ipc';
 
 /**
- * Reads/writes `userData/config.json`: the data directory and theme. Tasks
- * themselves live in the data directory.
+ * Reads/writes `userData/config.json`: the data directory, theme and daily
+ * effort limit. Tasks themselves live in the data directory.
  */
 
 export function configPath(): string {
@@ -18,7 +19,7 @@ export function defaultDataDir(): string {
 }
 
 export function defaultConfig(): AppConfig {
-  return { dataDir: defaultDataDir(), theme: 'system' };
+  return { dataDir: defaultDataDir(), theme: 'system', effortLimit: DEFAULT_EFFORT_LIMIT };
 }
 
 export function parseConfig(raw: unknown): AppConfig {
@@ -27,6 +28,7 @@ export function parseConfig(raw: unknown): AppConfig {
   return {
     dataDir: typeof p.dataDir === 'string' && p.dataDir ? p.dataDir : base.dataDir,
     theme: p.theme === 'light' || p.theme === 'dark' || p.theme === 'system' ? p.theme : base.theme,
+    effortLimit: isEffortLimit(p.effortLimit) ? p.effortLimit : base.effortLimit,
   };
 }
 

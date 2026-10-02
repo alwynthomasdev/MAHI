@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { DEFAULT_EFFORT_LIMIT } from '@models/Effort';
 import type { AppConfig, Theme } from '@shared/ipc';
 import { call, mahi } from '../api';
 
@@ -36,12 +37,14 @@ export const useSettingsStore = defineStore('settings', {
   state: () => ({
     dataDir: '',
     theme: 'system' as Theme,
+    effortLimit: DEFAULT_EFFORT_LIMIT,
     loaded: false,
   }),
   actions: {
     apply(cfg: AppConfig) {
       this.dataDir = cfg.dataDir;
       this.theme = cfg.theme;
+      this.effortLimit = cfg.effortLimit;
       this.loaded = true;
       applyTheme(this.theme);
     },
@@ -50,6 +53,9 @@ export const useSettingsStore = defineStore('settings', {
     },
     async setTheme(theme: Theme) {
       this.apply(await call(mahi.config.setTheme(theme)));
+    },
+    async setEffortLimit(limit: number) {
+      this.apply(await call(mahi.config.setEffortLimit(limit)));
     },
     /** Resolves true when the folder changed. */
     async pickDataDir(): Promise<boolean> {

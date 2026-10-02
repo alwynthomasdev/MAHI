@@ -6,8 +6,12 @@ export type Priority = (typeof PRIORITIES)[number];
 export const STATUSES = ['Scheduled', 'WIP', 'On Hold', 'Done', 'Archive'] as const;
 export type Status = (typeof STATUSES)[number];
 
+export const EFFORTS = ['None', 'Easy', 'Moderate', 'Hard'] as const;
+export type Effort = (typeof EFFORTS)[number];
+
 export const DEFAULT_PRIORITY: Priority = 'Medium';
 export const DEFAULT_STATUS: Status = 'Scheduled';
+export const DEFAULT_EFFORT: Effort = 'None';
 
 export const PRIORITY_RANK: Record<Priority, number> = {
   Lowest: 0,
@@ -17,12 +21,21 @@ export const PRIORITY_RANK: Record<Priority, number> = {
   Highest: 4,
 };
 
+/** What each effort level adds to its day's load (see `Effort.ts`). */
+export const EFFORT_POINTS: Record<Effort, number> = {
+  None: 0,
+  Easy: 1,
+  Moderate: 2,
+  Hard: 3,
+};
+
 export interface Task {
   id: string;
   title: string;
   description: string;
   priority: Priority;
   status: Status;
+  effort: Effort;
   /** Local calendar date, `YYYY-MM-DD`. */
   due: string;
   labels: string[];
@@ -38,6 +51,7 @@ export interface NewTaskInput {
   description?: string;
   priority?: Priority;
   status?: Status;
+  effort?: Effort;
   due?: string;
   labels?: string[];
 }
@@ -50,6 +64,10 @@ export function isPriority(v: unknown): v is Priority {
 
 export function isStatus(v: unknown): v is Status {
   return typeof v === 'string' && (STATUSES as readonly string[]).includes(v);
+}
+
+export function isEffort(v: unknown): v is Effort {
+  return typeof v === 'string' && (EFFORTS as readonly string[]).includes(v);
 }
 
 /** Trim, drop empties, de-duplicate case-insensitively (first spelling wins). */
@@ -73,7 +91,7 @@ export function requireTitle(title: unknown): string {
   return t;
 }
 
-/** Build a new task, applying defaults (Medium, Scheduled, due today). */
+/** Build a new task, applying defaults (Medium, Scheduled, no effort, due today). */
 export function createTask(input: NewTaskInput, id: string, now: Date = new Date()): Task {
   const ts = now.toISOString();
   return {
@@ -82,6 +100,7 @@ export function createTask(input: NewTaskInput, id: string, now: Date = new Date
     description: input.description ?? '',
     priority: isPriority(input.priority) ? input.priority : DEFAULT_PRIORITY,
     status: isStatus(input.status) ? input.status : DEFAULT_STATUS,
+    effort: isEffort(input.effort) ? input.effort : DEFAULT_EFFORT,
     due: isDateString(input.due) ? input.due : todayDate(now),
     labels: normalizeLabels(input.labels),
     created: ts,
@@ -101,6 +120,10 @@ export function applyPatch(task: Task, patch: TaskPatch, now: Date = new Date())
   if (patch.status !== undefined) {
     if (!isStatus(patch.status)) throw new Error(`Invalid status "${patch.status}".`);
     next.status = patch.status;
+  }
+  if (patch.effort !== undefined) {
+    if (!isEffort(patch.effort)) throw new Error(`Invalid effort "${patch.effort}".`);
+    next.effort = patch.effort;
   }
   if (patch.due !== undefined) {
     if (!isDateString(patch.due)) throw new Error(`Invalid due date "${patch.due}".`);
@@ -131,6 +154,7 @@ export function normalizeTask(raw: unknown, fallbackId: string, now: Date = new 
     description: typeof r.description === 'string' ? r.description : '',
     priority: isPriority(r.priority) ? r.priority : DEFAULT_PRIORITY,
     status: isStatus(r.status) ? r.status : DEFAULT_STATUS,
+    effort: isEffort(r.effort) ? r.effort : DEFAULT_EFFORT,
     due: isDateString(r.due) ? r.due : todayDate(now),
     labels: normalizeLabels(r.labels),
     created,

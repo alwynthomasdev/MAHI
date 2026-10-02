@@ -29,9 +29,15 @@ describe('TaskService', () => {
 
   it('updates and round-trips', async () => {
     const t = await ctx.tasks.create({ title: 'A' });
-    await ctx.tasks.update(t.id, { status: 'WIP', description: 'details', labels: ['x'] });
+    await ctx.tasks.update(t.id, {
+      status: 'WIP',
+      effort: 'Hard',
+      description: 'details',
+      labels: ['x'],
+    });
     expect(await ctx.tasks.get(t.id)).toMatchObject({
       status: 'WIP',
+      effort: 'Hard',
       description: 'details',
       labels: ['x'],
     });

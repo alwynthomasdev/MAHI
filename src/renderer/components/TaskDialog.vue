@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { nextTick, onMounted, reactive, ref } from 'vue';
-import { PRIORITIES, STATUSES, type Task } from '@models/Task';
+import { EFFORTS, EFFORT_POINTS, PRIORITIES, STATUSES, type Task } from '@models/Task';
 import { useTasksStore } from '../stores/tasks';
 import LabelInput from './LabelInput.vue';
 
@@ -14,6 +14,7 @@ const form = reactive({
   description: props.task.description,
   priority: props.task.priority,
   status: props.task.status,
+  effort: props.task.effort,
   due: props.task.due,
   labels: [...props.task.labels],
 });
@@ -93,6 +94,14 @@ function onKeydown(e: KeyboardEvent) {
           </select>
         </label>
         <label class="field">
+          <span>Effort</span>
+          <select v-model="form.effort">
+            <option v-for="e in EFFORTS" :key="e" :value="e">
+              {{ e }} ({{ EFFORT_POINTS[e] }})
+            </option>
+          </select>
+        </label>
+        <label class="field">
           <span>Due date</span>
           <input v-model="form.due" type="date" required />
         </label>
@@ -155,7 +164,7 @@ h3 {
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
 .err {
