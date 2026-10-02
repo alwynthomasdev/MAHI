@@ -6,6 +6,25 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-10-02
+
+Effort levels for tasks, and a daily effort limit that shows when a day is
+overloaded.
+
+### Added
+
+- An effort for each task: None (0), Easy (1), Moderate (2) or Hard (3). New
+  tasks start at None, and existing tasks read as None.
+- Set a task's effort in the edit dialog, inline in the task table (Today,
+  List, Archive and Calendar Day) or on Calendar Week cards.
+- A daily effort limit in Settings (12 by default, any whole number from 1 to
+  999).
+- Today and the Calendar Month, Week and Day views show each day's total
+  effort against the limit: green, amber above 70% of the limit, and red above
+  the limit. Only open tasks count. Today includes overdue tasks; a Calendar
+  day counts only the tasks due on that date. It is a guide only, so nothing
+  is blocked.
+
 ## [1.2.0] - 2026-09-30
 
 A new Calendar tab for seeing what's due and when.
