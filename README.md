@@ -19,9 +19,10 @@ task tracker (Electron + Vue 3), a simplified sibling of
   small always-on-top window. Type a title and press Enter; it stays open for
   the next one. Everything else takes its default (Medium, Scheduled, due today).
 - **Effort**: give a task an effort of None (0), Easy (1), Moderate (2) or
-  Hard (3). Today and every Calendar day show the total for their open tasks
-  against a daily limit (12 by default): green, amber above 70% of the limit,
-  red above it. It is a guide to whether a day is overloaded; nothing is blocked.
+  Hard (3). Today, every Calendar day and the Today & overdue swimlanes show
+  the day's total against a daily limit (12 by default): green, amber above
+  70% of the limit, red above it. Done tasks still count; On Hold and archived
+  tasks do not. It is a guide to whether a day is overloaded; nothing is blocked.
 - **Settings**: light / dark / system theme, daily effort limit, data folder,
   import / export (choose which statuses to export), and **Check for updates**.
 

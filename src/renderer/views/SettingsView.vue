@@ -148,8 +148,9 @@ async function checkUpdates() {
     <div class="card block">
       <h3>Daily effort</h3>
       <p class="muted">
-        Each open task adds its effort to the day it is due: Easy 1, Moderate 2, Hard 3. Today and
-        the Calendar flag a day amber above 70% of this limit and red above it. It is only a guide —
+        Each task adds its effort to the day it is due: Easy 1, Moderate 2, Hard 3. Done tasks still
+        count; On Hold and archived tasks do not. Today, the Calendar and the Today &amp; overdue
+        swimlanes flag a day amber above 70% of this limit and red above it. It is only a guide —
         nothing is blocked.
       </p>
       <label class="row limit">

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { totalEffort } from '@models/Effort';
 import { useTasksStore } from '../../stores/tasks';
 import EffortBadge from '../EffortBadge.vue';
 import TaskTable from '../TaskTable.vue';
@@ -9,7 +8,8 @@ import SnoozeMenu from '../SnoozeMenu.vue';
 /**
  * The open tasks due on the selected day, as in the Today tab. On today
  * itself, overdue tasks follow in their own list so nothing is hidden. The
- * effort badge counts only the tasks due on this day, as in Month and Week.
+ * effort badge is this date's load, as in Month and Week: tasks due on it,
+ * Done included and On Hold left out, so it need not match the list below.
  */
 const tasks = useTasksStore();
 
@@ -27,7 +27,7 @@ const overdue = computed(() =>
       <template v-if="overdue.length">
         · <span class="overdue">{{ overdue.length }} overdue</span></template
       >
-      <EffortBadge :total="totalEffort(dayTasks)" />
+      <EffortBadge :total="tasks.effortByDue.get(tasks.calendarDate) ?? 0" />
     </p>
     <TaskTable
       :tasks="dayTasks"

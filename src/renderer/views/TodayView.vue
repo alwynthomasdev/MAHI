@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { totalEffort } from '@models/Effort';
 import { useTasksStore } from '../stores/tasks';
 import EffortBadge from '../components/EffortBadge.vue';
 import TaskTable from '../components/TaskTable.vue';
@@ -18,7 +17,7 @@ const tasks = useTasksStore();
           · <span class="overdue">{{ tasks.overdueCount }} overdue</span></template
         >
       </span>
-      <EffortBadge :total="totalEffort(tasks.todayTasks)" />
+      <EffortBadge :total="tasks.todayEffort" />
     </header>
     <TaskTable
       :tasks="tasks.todayTasks"

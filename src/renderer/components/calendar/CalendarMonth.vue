@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { totalEffort } from '@models/Effort';
 import { monthWeeks, parseDate } from '@shared/dates';
 import { useTasksStore } from '../../stores/tasks';
 import EffortBadge from '../EffortBadge.vue';
 
 /**
- * A month grid showing how many open tasks fall on each day, and their effort
- * against the daily limit; click a day to open it.
+ * A month grid showing how many open tasks fall on each day, and the day's
+ * effort against the daily limit; click a day to open it.
  */
 const emit = defineEmits<{ pick: [day: string] }>();
 const tasks = useTasksStore();
@@ -18,7 +17,7 @@ const month = computed(() => tasks.calendarDate.slice(0, 7));
 const weeks = computed(() => monthWeeks(tasks.calendarDate));
 
 const countOn = (day: string) => tasks.openByDue.get(day)?.length ?? 0;
-const effortOn = (day: string) => totalEffort(tasks.openByDue.get(day) ?? []);
+const effortOn = (day: string) => tasks.effortByDue.get(day) ?? 0;
 </script>
 
 <template>

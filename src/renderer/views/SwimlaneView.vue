@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { sortTasks } from '@models/Filter';
-import { PRIORITIES, type Status, type Task } from '@models/Task';
+import { EFFORTS, PRIORITIES, type Status, type Task } from '@models/Task';
 import { formatDue } from '@shared/dates';
-import { PRIORITY_COLOR, STATUS_COLOR } from '../lib/colors';
+import { EFFORT_COLOR, PRIORITY_COLOR, STATUS_COLOR } from '../lib/colors';
 import { useTasksStore } from '../stores/tasks';
+import EffortBadge from '../components/EffortBadge.vue';
 import PillSelect from '../components/PillSelect.vue';
 
 /**
  * Scheduled · WIP · Done side by side, with On Hold as a full-width lane along
- * the bottom. Native HTML5 drag-and-drop moves tasks between lanes.
+ * the bottom. Native HTML5 drag-and-drop moves tasks between lanes. On
+ * "Today & overdue" the header carries today's effort against the daily limit.
  */
 const tasks = useTasksStore();
 
@@ -77,6 +79,7 @@ const archiveAll = async () => {
           {{ s.label }}
         </button>
       </div>
+      <EffortBadge v-if="tasks.swimlaneScope === 'today'" :total="tasks.todayEffort" />
     </header>
     <div class="board scroll-thin">
       <div
@@ -124,6 +127,14 @@ const archiveAll = async () => {
                 :colors="PRIORITY_COLOR"
                 label="Priority"
                 @update:model-value="(v) => tasks.update(t.id, { priority: v })"
+              />
+              <PillSelect
+                :model-value="t.effort"
+                :options="EFFORTS"
+                :colors="EFFORT_COLOR"
+                label="Effort"
+                caption="Effort"
+                @update:model-value="(v) => tasks.update(t.id, { effort: v })"
               />
               <span class="due" :class="formatDue(t.due).tone">{{ formatDue(t.due).text }}</span>
               <span class="spacer" />
@@ -241,6 +252,7 @@ const archiveAll = async () => {
 }
 .meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   margin-top: 8px;

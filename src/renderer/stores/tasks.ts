@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { effortByDue, todayEffort } from '@models/Effort';
 import {
   DEFAULT_SORT,
   allLabels,
@@ -53,6 +54,14 @@ export const useTasksStore = defineStore('tasks', {
     /** Calendar: open (not Done/Archive) tasks by due date, each day sorted by priority. */
     openByDue(state): Map<string, Task[]> {
       return groupByDue(sortTasks(state.items.filter(isOpenTask), { key: 'priority', dir: 'desc' }));
+    },
+    /** Effort points per due date; On Hold and Archive are left out, Done counts. */
+    effortByDue(state): Map<string, number> {
+      return effortByDue(state.items);
+    },
+    /** Today's effort, including overdue work still to do. */
+    todayEffort(state): number {
+      return todayEffort(state.items, state.today);
     },
     archived(state): Task[] {
       return sortTasks(

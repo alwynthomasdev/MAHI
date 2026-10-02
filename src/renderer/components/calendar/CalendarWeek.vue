@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { totalEffort } from '@models/Effort';
 import { EFFORTS, PRIORITIES, STATUSES, type Task } from '@models/Task';
 import { parseDate, weekDays } from '@shared/dates';
 import { EFFORT_COLOR, PRIORITY_COLOR, STATUS_COLOR } from '../../lib/colors';
@@ -25,7 +24,7 @@ const lanes = computed(() =>
       weekday: d.toLocaleDateString(undefined, { weekday: 'short' }),
       date: d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' }),
       items,
-      effort: totalEffort(items),
+      effort: tasks.effortByDue.get(day) ?? 0,
     };
   }),
 );
