@@ -61,6 +61,12 @@ describe('isOpenTask / groupByDue', () => {
     expect(byDay.get('2026-09-27')).toBeUndefined();
     expect(groupByDue(tasks).get('2026-09-27')?.map((t) => t.id)).toEqual(['charlie', 'delta']);
   });
+
+  it('folds days before `from` into it', () => {
+    const byDay = groupByDue(tasks.filter(isOpenTask), '2026-09-27');
+    expect([...byDay.keys()]).toEqual(['2026-09-30', '2026-09-27']);
+    expect(byDay.get('2026-09-27')?.map((t) => t.id)).toEqual(['Bravo report']);
+  });
 });
 
 describe('allLabels', () => {

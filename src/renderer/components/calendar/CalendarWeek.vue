@@ -10,7 +10,8 @@ import PillSelect from '../PillSelect.vue';
 /**
  * One lane per day, Monday–Sunday, headed by the day's effort against the
  * daily limit. Dragging a card to another day moves its due date there
- * (native HTML5 drag-and-drop, as in the Swimlane view).
+ * (native HTML5 drag-and-drop, as in the Swimlane view). Days before today
+ * are blank and take no drops — overdue tasks sit in today's lane.
  */
 const emit = defineEmits<{ pick: [day: string] }>();
 const tasks = useTasksStore();
@@ -25,6 +26,7 @@ const lanes = computed(() =>
       date: d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' }),
       items,
       effort: tasks.effortByDue.get(day) ?? 0,
+      past: day < tasks.today,
     };
   }),
 );
@@ -43,9 +45,17 @@ function onDragEnd() {
   overDay.value = null;
 }
 
+/** Past days are not drop targets: leaving the event alone refuses the drop. */
+function onDragOver(e: DragEvent, lane: { day: string; past: boolean }) {
+  if (lane.past) return;
+  e.preventDefault();
+  overDay.value = lane.day;
+}
+
 async function onDrop(e: DragEvent, due: string) {
   const id = e.dataTransfer?.getData('text/plain') || dragId.value;
   onDragEnd();
+  if (due < tasks.today) return;
   const task = tasks.items.find((t) => t.id === id);
   if (task && task.due !== due) await tasks.update(task.id, { due });
 }
@@ -60,19 +70,23 @@ async function onDrop(e: DragEvent, due: string) {
       :class="{
         over: overDay === lane.day,
         today: lane.day === tasks.today,
+        past: lane.past,
       }"
-      @dragover.prevent="overDay = lane.day"
+      @dragover="onDragOver($event, lane)"
       @dragleave.self="overDay = null"
       @drop.prevent="onDrop($event, lane.day)"
     >
-      <button class="lane-head ghost" title="Open day" @click="emit('pick', lane.day)">
+      <button
+        class="lane-head ghost"
+        :title="lane.past ? undefined : 'Open day'"
+        :disabled="lane.past"
+        @click="emit('pick', lane.day)"
+      >
         <span class="weekday">{{ lane.weekday }}</span>
         <span class="date">{{ lane.date }}</span>
         <span class="spacer" />
         <EffortBadge v-if="lane.effort" :total="lane.effort" compact />
-        <span class="count" :class="{ late: lane.day < tasks.today && lane.items.length }">{{
-          lane.items.length
-        }}</span>
+        <span v-if="!lane.past" class="count">{{ lane.items.length }}</span>
       </button>
       <div class="cards scroll-thin">
         <article
@@ -114,7 +128,7 @@ async function onDrop(e: DragEvent, due: string) {
             />
           </div>
         </article>
-        <div v-if="!lane.items.length" class="drop-hint muted">Drop here</div>
+        <div v-if="!lane.items.length && !lane.past" class="drop-hint muted">Drop here</div>
       </div>
     </div>
   </div>
@@ -158,6 +172,16 @@ async function onDrop(e: DragEvent, due: string) {
   border-color: transparent;
   text-decoration: underline;
 }
+.lane.past {
+  background: transparent;
+  border-style: dashed;
+  opacity: 0.45;
+}
+.lane.past .lane-head {
+  opacity: 1;
+  cursor: default;
+  text-decoration: none;
+}
 .weekday {
   font-weight: 600;
 }
@@ -173,9 +197,6 @@ async function onDrop(e: DragEvent, due: string) {
   color: var(--text-faint);
   font-family: var(--mono);
   font-size: var(--fs-xs);
-}
-.count.late {
-  color: var(--p-highest);
 }
 .cards {
   flex: 1;

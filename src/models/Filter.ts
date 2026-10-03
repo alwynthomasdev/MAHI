@@ -87,13 +87,17 @@ export function isTodayTask(task: Task, today: string): boolean {
   return task.due <= today && isOpenTask(task);
 }
 
-/** Tasks bucketed by due date (`YYYY-MM-DD`), input order kept within a day. */
-export function groupByDue(tasks: Task[]): Map<string, Task[]> {
+/**
+ * Tasks bucketed by due date (`YYYY-MM-DD`), input order kept within a day.
+ * With `from`, earlier due dates fall into that day, so nothing sits in the past.
+ */
+export function groupByDue(tasks: Task[], from?: string): Map<string, Task[]> {
   const map = new Map<string, Task[]>();
   for (const t of tasks) {
-    const day = map.get(t.due);
+    const due = from && t.due < from ? from : t.due;
+    const day = map.get(due);
     if (day) day.push(t);
-    else map.set(t.due, [t]);
+    else map.set(due, [t]);
   }
   return map;
 }

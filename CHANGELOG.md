@@ -6,6 +6,24 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- The Calendar now only looks forward. Overdue tasks fall into today in the
+  Month, Week and Day views, and today's count and effort include them.
+- Month view: days before today are dimmed, show no task count or effort, and
+  can no longer be opened.
+- Week view: lanes before today are dimmed and empty, their headers no longer
+  open the day, and tasks cannot be dragged onto them.
+- Day view: today's list includes overdue tasks as ordinary rows.
+- The Previous button is disabled once the month, week or day on show contains
+  today, and the selected date moves forward to today when it would otherwise
+  be in the past, including when the day rolls over at midnight.
+
+### Removed
+
+- The separate "Overdue" list and the "N overdue" note in the Calendar Day
+  view. Overdue tasks are now part of today's list.
+
 ## [1.3.1] - 2026-10-02
 
 Effort on the Swimlanes board, and a change to which tasks count towards a

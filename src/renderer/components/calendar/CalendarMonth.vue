@@ -6,7 +6,8 @@ import EffortBadge from '../EffortBadge.vue';
 
 /**
  * A month grid showing how many open tasks fall on each day, and the day's
- * effort against the daily limit; click a day to open it.
+ * effort against the daily limit; click a day to open it. Days before today
+ * are blank and cannot be opened — overdue tasks count towards today.
  */
 const emit = defineEmits<{ pick: [day: string] }>();
 const tasks = useTasksStore();
@@ -36,6 +37,7 @@ const effortOn = (day: string) => tasks.effortByDue.get(day) ?? 0;
             today: day === tasks.today,
             past: day < tasks.today,
           }"
+          :disabled="day < tasks.today"
           :title="parseDate(day).toLocaleDateString(undefined, { dateStyle: 'full' })"
           @click="emit('pick', day)"
         >
@@ -88,9 +90,15 @@ const effortOn = (day: string) => tasks.effortByDue.get(day) ?? 0;
   border-radius: var(--radius-lg);
   text-align: left;
 }
-.cell:hover {
+.cell:hover:not(:disabled) {
   border-color: var(--accent);
   background: var(--hover-bg);
+}
+.cell.past {
+  background: transparent;
+  border-style: dashed;
+  opacity: 0.45;
+  cursor: default;
 }
 .cell.outside {
   background: transparent;
@@ -133,12 +141,5 @@ const effortOn = (day: string) => tasks.effortByDue.get(day) ?? 0;
 }
 .cell.today .count {
   border-color: var(--accent);
-}
-.cell.past .count {
-  border-color: var(--p-highest);
-  color: var(--p-highest);
-}
-.cell.past .count b {
-  color: var(--p-highest);
 }
 </style>

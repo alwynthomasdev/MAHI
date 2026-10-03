@@ -51,13 +51,28 @@ export const useTasksStore = defineStore('tasks', {
         state.sort,
       );
     },
-    /** Calendar: open (not Done/Archive) tasks by due date, each day sorted by priority. */
+    /**
+     * Calendar: open (not Done/Archive) tasks by due date, each day sorted by
+     * priority. Overdue tasks fall into today; past days hold nothing.
+     */
     openByDue(state): Map<string, Task[]> {
-      return groupByDue(sortTasks(state.items.filter(isOpenTask), { key: 'priority', dir: 'desc' }));
+      return groupByDue(
+        sortTasks(state.items.filter(isOpenTask), { key: 'priority', dir: 'desc' }),
+        state.today,
+      );
     },
-    /** Effort points per due date; On Hold and Archive are left out, Done counts. */
+    /**
+     * Calendar: effort points per due date from today on; On Hold and Archive
+     * are left out, Done counts. Today carries the overdue work still to do.
+     */
     effortByDue(state): Map<string, number> {
-      return effortByDue(state.items);
+      const map = new Map<string, number>();
+      for (const [day, total] of effortByDue(state.items)) {
+        if (day > state.today) map.set(day, total);
+      }
+      const today = todayEffort(state.items, state.today);
+      if (today) map.set(state.today, today);
+      return map;
     },
     /** Today's effort, including overdue work still to do. */
     todayEffort(state): number {

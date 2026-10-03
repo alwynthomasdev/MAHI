@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { addToDate, parseDate, startOfMonth, weekDays } from '@shared/dates';
 import { useTasksStore } from '../stores/tasks';
 import CalendarMonth from '../components/calendar/CalendarMonth.vue';
@@ -8,8 +8,9 @@ import CalendarDay from '../components/calendar/CalendarDay.vue';
 
 /**
  * Month (counts per day) · Week (a lane per day, drag to reschedule) · Day
- * (a task list). Only open tasks — Done and Archive are left out. Mode and
- * date live in the store so they survive switching tabs.
+ * (a task list). Only open tasks — Done and Archive are left out. It looks
+ * forward only: past days are blank and out of reach, and overdue tasks fall
+ * into today. Mode and date live in the store so they survive switching tabs.
  */
 const tasks = useTasksStore();
 
@@ -36,13 +37,33 @@ const title = computed(() => {
   })}`;
 });
 
+/** The first day of the month / week / day on show. */
+const periodStart = computed(() => {
+  const d = tasks.calendarDate;
+  if (tasks.calendarMode === 'month') return startOfMonth(d);
+  return tasks.calendarMode === 'week' ? weekDays(d)[0] : d;
+});
+
+/** The calendar only looks forward: no stepping back past the period holding today. */
+const canGoBack = computed(() => periodStart.value > tasks.today);
+
 function step(dir: 1 | -1) {
+  if (dir === -1 && !canGoBack.value) return;
   const d = tasks.calendarDate;
   tasks.calendarDate =
     tasks.calendarMode === 'month'
       ? addToDate(startOfMonth(d), { months: dir })
       : addToDate(d, { days: tasks.calendarMode === 'week' ? 7 * dir : dir });
 }
+
+// Never rest on a past day — after stepping back to this month, or across midnight.
+watch(
+  () => [tasks.calendarDate, tasks.today],
+  () => {
+    if (tasks.calendarDate < tasks.today) tasks.calendarDate = tasks.today;
+  },
+  { immediate: true },
+);
 
 function goToday() {
   tasks.refreshToday();
@@ -60,7 +81,9 @@ function openDay(day: string) {
     <header class="view-head cal-head">
       <h2>Calendar</h2>
       <div class="nav">
-        <button class="ghost arrow" title="Previous" @click="step(-1)">‹</button>
+        <button class="ghost arrow" title="Previous" :disabled="!canGoBack" @click="step(-1)">
+          ‹
+        </button>
         <button @click="goToday">Today</button>
         <button class="ghost arrow" title="Next" @click="step(1)">›</button>
       </div>
