@@ -6,6 +6,11 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-10-04
+
+A new Effort tab that shows where effort goes by label, and a Calendar that
+only looks forward, with overdue tasks folded into today.
+
 ### Added
 
 - An Effort tab: a ring chart and table of where effort goes, by label. Toggle
