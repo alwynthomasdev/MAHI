@@ -39,7 +39,7 @@ export interface Task {
   /** Local calendar date, `YYYY-MM-DD`. */
   due: string;
   labels: string[];
-  /** ISO timestamps. */
+  /** ISO timestamps. `created` is set once and never changes. */
   created: string;
   updated: string;
   /** Set only while the task sits in the recycle bin. */
@@ -142,12 +142,14 @@ function isTimestamp(v: unknown): v is string {
  * Coerce an untrusted object (a file on disk, an import) into a Task. Bad or
  * missing fields fall back to defaults rather than throwing; only a missing
  * title is fatal. `id` comes from the object when it is a non-empty string,
- * otherwise from `fallbackId`.
+ * otherwise from `fallbackId`. A missing `created` takes `updated`, else now;
+ * `TaskRepository` writes that back so it never moves again.
  */
 export function normalizeTask(raw: unknown, fallbackId: string, now: Date = new Date()): Task {
   if (!raw || typeof raw !== 'object') throw new Error('Task must be an object.');
   const r = raw as Record<string, unknown>;
-  const created = isTimestamp(r.created) ? r.created : now.toISOString();
+  const updated = isTimestamp(r.updated) ? r.updated : undefined;
+  const created = isTimestamp(r.created) ? r.created : (updated ?? now.toISOString());
   const task: Task = {
     id: typeof r.id === 'string' && r.id.trim() ? r.id.trim() : fallbackId,
     title: requireTitle(r.title),
@@ -158,7 +160,7 @@ export function normalizeTask(raw: unknown, fallbackId: string, now: Date = new 
     due: isDateString(r.due) ? r.due : todayDate(now),
     labels: normalizeLabels(r.labels),
     created,
-    updated: isTimestamp(r.updated) ? r.updated : created,
+    updated: updated ?? created,
   };
   if (isTimestamp(r.deletedAt)) task.deletedAt = r.deletedAt;
   return task;

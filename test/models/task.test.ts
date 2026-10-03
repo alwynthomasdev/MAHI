@@ -49,6 +49,11 @@ describe('applyPatch', () => {
     expect(t.updated).toBe(later.toISOString());
     expect(t.created).toBe(base.created);
   });
+
+  it('never changes created, even when a patch smuggles one in', () => {
+    const patch = { title: 'B', created: '2000-01-01T00:00:00.000Z' } as never;
+    expect(applyPatch(base, patch, new Date(2026, 8, 28)).created).toBe(base.created);
+  });
 });
 
 describe('normalizeTask', () => {
@@ -76,6 +81,15 @@ describe('normalizeTask', () => {
     const t = normalizeTask({ id: 'keep', title: 'X', deletedAt: NOW.toISOString() }, 'fb', NOW);
     expect(t.id).toBe('keep');
     expect(t.deletedAt).toBe(NOW.toISOString());
+  });
+
+  it('keeps created; a missing one takes updated, else now', () => {
+    const stamp = '2026-01-02T03:04:05.000Z';
+    expect(normalizeTask({ title: 'X', created: stamp }, 'fb', NOW).created).toBe(stamp);
+    expect(normalizeTask({ title: 'X', updated: stamp }, 'fb', NOW).created).toBe(stamp);
+    expect(normalizeTask({ title: 'X', created: 'nope' }, 'fb', NOW).created).toBe(
+      NOW.toISOString(),
+    );
   });
 
   it('rejects entries without a title', () => {

@@ -19,6 +19,13 @@ All notable changes to MAHI are documented here. The format follows
   today, and the selected date moves forward to today when it would otherwise
   be in the past, including when the day rolls over at midnight.
 
+### Fixed
+
+- A task's created date no longer moves. A task file with no usable created
+  date (a hand-written one, say) used to be given a new one each time it was
+  read; it now takes its last-updated date, or the time it is first read, and
+  that is saved to the file.
+
 ### Removed
 
 - The separate "Overdue" list and the "N overdue" note in the Calendar Day

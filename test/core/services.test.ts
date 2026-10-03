@@ -49,6 +49,25 @@ describe('TaskService', () => {
     expect((await ctx.tasks.list()).map((t) => t.title)).toEqual(['ok']);
   });
 
+  it('never changes created: update, delete and restore all keep it', async () => {
+    const t = await ctx.tasks.create({ title: 'A' }, new Date(2026, 0, 5));
+    const updated = await ctx.tasks.update(t.id, { status: 'Done' }, new Date(2026, 5, 1));
+    expect(updated.created).toBe(t.created);
+    expect(updated.updated).not.toBe(t.created);
+
+    await ctx.tasks.delete(t.id);
+    expect((await ctx.bin.restore(t.id)).created).toBe(t.created);
+    expect((await ctx.tasks.get(t.id)).created).toBe(t.created);
+  });
+
+  it('gives a file with no created a date once, and writes it back', async () => {
+    const file = path.join(dir, 'tasks', 'hand.json');
+    await fs.writeFile(file, JSON.stringify({ title: 'Hand-written' }), 'utf8');
+    const [first] = await ctx.tasks.list();
+    expect(JSON.parse(await fs.readFile(file, 'utf8')).created).toBe(first.created);
+    expect((await ctx.tasks.get('hand')).created).toBe(first.created);
+  });
+
   it('rejects path-like ids', async () => {
     await expect(ctx.tasks.get('../config')).rejects.toThrow(/Invalid task id/);
   });
@@ -100,6 +119,11 @@ describe('ImportExportService', () => {
     const same = await ctx.io.importData(doc);
     expect(same).toEqual({ imported: 2, renamed: 2, skipped: 0 });
     expect(await ctx.tasks.list()).toHaveLength(4);
+    // A re-imported task keeps the date it was first created, new id or not.
+    const created = (await ctx.tasks.list()).map((t) => t.created).sort();
+    expect(created).toEqual(
+      doc.tasks.flatMap((t: { created: string }) => [t.created, t.created]).sort(),
+    );
 
     // Fresh folder: ids are kept.
     const other = await makeTmpDir();
