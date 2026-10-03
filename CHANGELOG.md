@@ -6,6 +6,19 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- An Effort tab: a ring chart and table of where effort goes, by label. Toggle
+  between Done (Done and archived tasks) and Planned (everything else, On Hold
+  included). The middle of the ring shows the total effort.
+- The table lists each label's effort, task count and share. Hovering a slice
+  or a row highlights the other.
+- Tasks with no effort are left out. A task with several labels counts in full
+  towards each, so the labels can add up to more than the total. Tasks with no
+  label show as "No label".
+- The six labels with the most effort overall each get a colour of their own,
+  which stays the same across Done and Planned; the rest share "Other".
+
 ### Changed
 
 - The Calendar now only looks forward. Overdue tasks fall into today in the

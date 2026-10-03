@@ -11,9 +11,17 @@ import {
   type TaskFilter,
   type TaskSort,
 } from '@models/Filter';
+import {
+  effortByLabel,
+  inScope,
+  labelKey,
+  type EffortReport,
+  type ReportScope,
+} from '@models/Report';
 import type { NewTaskInput, Task, TaskPatch } from '@models/Task';
 import { todayDate } from '@shared/dates';
 import { call, mahi } from '../api';
+import { LABEL_COLORS } from '../lib/colors';
 
 export const useTasksStore = defineStore('tasks', {
   state: () => ({
@@ -24,6 +32,8 @@ export const useTasksStore = defineStore('tasks', {
     sort: { ...DEFAULT_SORT } as TaskSort,
     /** Swimlane view: every task, or only those due today or earlier. */
     swimlaneScope: 'all' as 'all' | 'today',
+    /** Effort view: what has been done, or what is planned. */
+    reportScope: 'done' as ReportScope,
     /** Calendar view: which layout, and the day it is centred on. */
     calendarMode: 'month' as 'month' | 'week' | 'day',
     calendarDate: todayDate(),
@@ -77,6 +87,21 @@ export const useTasksStore = defineStore('tasks', {
     /** Today's effort, including overdue work still to do. */
     todayEffort(state): number {
       return todayEffort(state.items, state.today);
+    },
+    /** Effort view: effort by label for the done or the planned tasks. */
+    effortReport(state): EffortReport {
+      return effortByLabel(state.items.filter((t) => inScope(t, state.reportScope)));
+    },
+    /**
+     * Effort view: the labels that get a colour of their own (by `labelKey`),
+     * in palette order. Ranked on all tasks, done and planned, so a label keeps
+     * its colour across the toggle; the rest fold into "Other".
+     */
+    chartLabels(state): string[] {
+      return effortByLabel(state.items)
+        .rows.filter((r) => r.label)
+        .slice(0, LABEL_COLORS.length)
+        .map((r) => labelKey(r.label));
     },
     archived(state): Task[] {
       return sortTasks(

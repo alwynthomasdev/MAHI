@@ -55,7 +55,7 @@ core service → `TaskRepository` → `FileStore` → disk**.
 
 | Dir | Runs in | Rule |
 | --- | --- | --- |
-| `src/models` | both | `Task.ts` (enums, defaults, `createTask`/`applyPatch`/`normalizeTask`), `Filter.ts` (filter/sort/`isTodayTask`), `Effort.ts` (daily effort total vs the limit). **No Node imports.** |
+| `src/models` | both | `Task.ts` (enums, defaults, `createTask`/`applyPatch`/`normalizeTask`), `Filter.ts` (filter/sort/`isTodayTask`), `Effort.ts` (daily effort total vs the limit), `Report.ts` (effort by label, done vs planned). **No Node imports.** |
 | `src/shared` | both | dates, Result, IPC contract. **No Node imports.** |
 | `src/storage` | main | `FileStore` (paths + atomic JSON writes), `TaskRepository` (live or bin folder). |
 | `src/core` | main | `TaskService`, `RecycleBinService`, `ImportExportService`, wired by `AppContext` per data dir. |

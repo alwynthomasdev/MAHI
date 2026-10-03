@@ -27,6 +27,7 @@ const NAV = [
   { to: '/list', label: 'List' },
   { to: '/board', label: 'Swimlanes' },
   { to: '/calendar', label: 'Calendar' },
+  { to: '/effort', label: 'Effort' },
   { to: '/archive', label: 'Archive' },
   { to: '/bin', label: 'Recycle bin' },
   { to: '/settings', label: 'Settings' },

@@ -35,6 +35,14 @@
   --status-fg: #ffffff;
   --status-fg-wip: #1a1e25;
 
+  /* categorical — the Effort chart's label colours, in fixed order */
+  --cat-1: #2a78d6;
+  --cat-2: #eb6834;
+  --cat-3: #1baf7a;
+  --cat-4: #eda100;
+  --cat-5: #e87ba4;
+  --cat-6: #008300;
+
   --overlay: rgba(0, 0, 0, 0.4);
 
   --danger: #d64545;
@@ -80,6 +88,13 @@
   --accent: #3fb68b;
   --accent-dim: #2b6b55;
   --accent-contrast: #0e1a15;
+
+  --cat-1: #3987e5;
+  --cat-2: #d95926;
+  --cat-3: #199e70;
+  --cat-4: #c98500;
+  --cat-5: #d55181;
+  --cat-6: #008300;
 
   --danger: #e06c6c;
   --ok: #4cb963;
