@@ -31,7 +31,10 @@ const dayTasks = computed(() => tasks.openByDue.get(tasks.calendarDate) ?? []);
       @effort="(t, v) => tasks.update(t.id, { effort: v })"
     >
       <template #actions="{ task }">
-        <SnoozeMenu @snooze="(due) => tasks.update(task.id, { due })" />
+        <SnoozeMenu
+          :from="tasks.calendarDate"
+          @snooze="(preset) => tasks.snooze([task.id], preset)"
+        />
       </template>
     </TaskTable>
   </section>

@@ -7,8 +7,11 @@ task tracker (Electron + Vue 3), a simplified sibling of
 ## Features
 
 - **Today**: tasks due today or overdue that aren't Done or Archived. Change
-  priority and status inline, or push a task out with **Postpone** (Tomorrow,
-  3 days, next Monday, 1 week, 1 month).
+  priority and status inline, or move a task with **Postpone** (Today,
+  Tomorrow, 3 days, next Monday, 1 week, 1 month). Away from today the presets
+  count from the day the task is on, not from today.
+- **Calendar week**: drag a card to another day to reschedule it. Tick several
+  cards to drag them together, or to postpone them all from the bar above.
 - **List**: everything not archived, with title search, status / priority /
   label filters, and order by due date, priority, title, created or updated.
 - **Swimlanes**: Scheduled · WIP · On Hold · Done. Drag cards between lanes;

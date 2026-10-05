@@ -6,8 +6,21 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Week view: tick the checkbox on several cards to move them together. Drag
+  any ticked card to another day and the rest follow, or use Postpone on the
+  bar that appears above the lanes; each task then moves from its own day.
+  The selection clears after a move or when you change week.
+- Postpone has a "Today" option, which brings a task back to today.
+
 ### Changed
 
+- Postpone now counts from the day the task is on rather than from today, so
+  a task on Thursday postponed by a day lands on Friday. Away from today the
+  options read "Next day", "3 days later", "Following Monday" and so on.
+  Overdue tasks still count from today.
+- Each Postpone option shows the date it lands on.
 - Week view: task cards show priority, status and effort as three coloured
   dots on one row beside the labels, instead of three full-width dropdowns.
   Click a dot to change the value; hover it to see what it is, for example

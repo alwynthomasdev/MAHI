@@ -22,6 +22,7 @@ import type { NewTaskInput, Task, TaskPatch } from '@models/Task';
 import { todayDate } from '@shared/dates';
 import { call, mahi } from '../api';
 import { LABEL_COLORS } from '../lib/colors';
+import { snoozeBase, type Snooze } from '../lib/snooze';
 
 export const useTasksStore = defineStore('tasks', {
   state: () => ({
@@ -143,6 +144,23 @@ export const useTasksStore = defineStore('tasks', {
       const task = await call(mahi.tasks.update(id, patch));
       this.upsert(task);
       return task;
+    },
+    /** Give every listed task the same due date. */
+    async moveTo(ids: string[], due: string) {
+      const moving = this.items.filter((t) => ids.includes(t.id) && t.due !== due);
+      await Promise.all(moving.map((t) => this.update(t.id, { due })));
+    },
+    /** Postpone each listed task by a preset, measured from the day it sits on. */
+    async snooze(ids: string[], preset: Snooze) {
+      const moves = this.items
+        .filter((t) => ids.includes(t.id))
+        .map((t) => ({
+          id: t.id,
+          from: t.due,
+          due: preset.to(snoozeBase(t, this.today), this.today),
+        }))
+        .filter((m) => m.due !== m.from);
+      await Promise.all(moves.map((m) => this.update(m.id, { due: m.due })));
     },
     async remove(id: string) {
       await call(mahi.tasks.delete(id));
