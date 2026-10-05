@@ -100,32 +100,36 @@ async function onDrop(e: DragEvent, due: string) {
           @click="tasks.open(t)"
         >
           <div class="title">{{ t.title }}</div>
-          <div v-if="t.labels.length" class="labels">
-            <span v-for="l in t.labels" :key="l" class="label">{{ l }}</span>
-          </div>
-          <div class="meta">
-            <PillSelect
-              :model-value="t.priority"
-              :options="PRIORITIES"
-              :colors="PRIORITY_COLOR"
-              label="Priority"
-              @update:model-value="(v) => tasks.update(t.id, { priority: v })"
-            />
-            <PillSelect
-              :model-value="t.status"
-              :options="STATUSES"
-              :colors="STATUS_COLOR"
-              label="Status"
-              @update:model-value="(v) => tasks.update(t.id, { status: v })"
-            />
-            <PillSelect
-              :model-value="t.effort"
-              :options="EFFORTS"
-              :colors="EFFORT_COLOR"
-              label="Effort"
-              caption="Effort"
-              @update:model-value="(v) => tasks.update(t.id, { effort: v })"
-            />
+          <div class="foot">
+            <div class="labels">
+              <span v-for="l in t.labels" :key="l" class="label">{{ l }}</span>
+            </div>
+            <div class="meta">
+              <PillSelect
+                :model-value="t.priority"
+                :options="PRIORITIES"
+                :colors="PRIORITY_COLOR"
+                label="Priority"
+                compact
+                @update:model-value="(v) => tasks.update(t.id, { priority: v })"
+              />
+              <PillSelect
+                :model-value="t.status"
+                :options="STATUSES"
+                :colors="STATUS_COLOR"
+                label="Status"
+                compact
+                @update:model-value="(v) => tasks.update(t.id, { status: v })"
+              />
+              <PillSelect
+                :model-value="t.effort"
+                :options="EFFORTS"
+                :colors="EFFORT_COLOR"
+                label="Effort"
+                compact
+                @update:model-value="(v) => tasks.update(t.id, { effort: v })"
+              />
+            </div>
           </div>
         </article>
         <div v-if="!lane.items.length && !lane.past" class="drop-hint muted">Drop here</div>
@@ -220,18 +224,24 @@ async function onDrop(e: DragEvent, due: string) {
   font-size: var(--fs-md);
   word-break: break-word;
 }
+.foot {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  margin-top: 5px;
+}
 .labels {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  margin-top: 5px;
 }
 .meta {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
-  margin-top: 7px;
+  gap: 2px;
+  flex-shrink: 0;
 }
 .drop-hint {
   text-align: center;

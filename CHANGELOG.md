@@ -6,6 +6,13 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Week view: task cards show priority, status and effort as three coloured
+  dots on one row beside the labels, instead of three full-width dropdowns.
+  Click a dot to change the value; hover it to see what it is, for example
+  "Priority: High".
+
 ## [1.4.0] - 2026-10-04
 
 A new Effort tab that shows where effort goes by label, and a Calendar that
