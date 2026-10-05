@@ -6,6 +6,11 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-10-05
+
+Move several tasks at once in the Calendar week view, a Postpone that counts
+from the day the task is on, and tidier week view cards.
+
 ### Added
 
 - Week view: tick the checkbox on several cards to move them together. Drag
