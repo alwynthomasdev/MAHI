@@ -6,6 +6,11 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-10-11
+
+A Backlog for parking tasks out of the way, an Effort tab that only reports
+what has been done, and the created date in the edit dialog.
+
 ### Added
 
 - Backlog status for parking a task. Whatever its due date, a Backlog task
