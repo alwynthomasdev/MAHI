@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { nextTick, onMounted, reactive, ref } from 'vue';
 import { EFFORTS, EFFORT_POINTS, PRIORITIES, STATUSES, type Task } from '@models/Task';
+import { formatTimestamp } from '@shared/dates';
 import { useTasksStore } from '../stores/tasks';
 import LabelInput from './LabelInput.vue';
 
@@ -66,6 +67,9 @@ function onKeydown(e: KeyboardEvent) {
     <form class="card dialog" @submit.prevent="save">
       <header class="row">
         <h3>Edit task</h3>
+        <span class="muted small" :title="new Date(task.created).toLocaleString()">
+          Created {{ formatTimestamp(task.created) }}
+        </span>
         <span class="spacer" />
         <button type="button" class="ghost" aria-label="Close" @click="emit('close')">✕</button>
       </header>

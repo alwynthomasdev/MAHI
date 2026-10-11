@@ -2,6 +2,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { AppContext } from '@core/AppContext';
+import { FALLBACK_CREATED } from '@models/Task';
 import { makeTmpDir } from '../helpers/tmp';
 
 let dir: string;
@@ -60,10 +61,11 @@ describe('TaskService', () => {
     expect((await ctx.tasks.get(t.id)).created).toBe(t.created);
   });
 
-  it('gives a file with no created a date once, and writes it back', async () => {
+  it('gives a file with no created 1 Oct 2026, and writes it back', async () => {
     const file = path.join(dir, 'tasks', 'hand.json');
     await fs.writeFile(file, JSON.stringify({ title: 'Hand-written' }), 'utf8');
     const [first] = await ctx.tasks.list();
+    expect(first.created).toBe(FALLBACK_CREATED);
     expect(JSON.parse(await fs.readFile(file, 'utf8')).created).toBe(first.created);
     expect((await ctx.tasks.get('hand')).created).toBe(first.created);
   });

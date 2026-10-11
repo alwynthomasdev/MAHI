@@ -11,15 +11,28 @@ All notable changes to MAHI are documented here. The format follows
 - Backlog status for parking a task. Whatever its due date, a Backlog task
   stays off Today, List, Swimlanes and the Calendar, and adds nothing to any
   effort total: not the daily load on Today, the Calendar or Swimlanes, and
-  neither Done nor Planned on the Effort tab.
+  not the Effort tab.
 - Backlog tab, before Archive on the menu, listing these tasks highest
   priority first, without the due date. "Schedule" brings a task back as
   Scheduled, due today if its date has passed; "Delete" moves it to the
   recycle bin.
+- The edit task dialog shows when the task was created, for example
+  "Created 2 Oct 2026". Hover it for the full date and time.
 
 ### Changed
 
 - Export in Settings includes Backlog tasks by default.
+- A task file with no usable created date is now taken as created on
+  1 October 2026, rather than on its last update or the time it was first
+  read. The date is still written back to the file.
+- Effort tab: the labels that get a colour of their own are now the six with
+  the most effort among Done and archived tasks.
+
+### Removed
+
+- The Planned side of the Effort tab, and with it the Done / Planned toggle.
+  The tab now only shows where the effort of Done and archived tasks went,
+  by label.
 
 ## [1.5.0] - 2026-10-05
 

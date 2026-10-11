@@ -7,17 +7,11 @@ import EffortPie, { type PieSlice } from '../components/EffortPie.vue';
 
 /**
  * Where effort goes, by label: a pie and a table, for what is done (Done and
- * Archive) or what is planned (everything else bar Backlog). Tasks with no
- * effort are left out. A task with several labels counts in full towards each, so shares are
- * of the labelled effort, not of the total. The toggle lives in the store so it
- * survives switching tabs.
+ * Archive). Tasks with no effort are left out. A task with several labels
+ * counts in full towards each, so shares are of the labelled effort, not of
+ * the total.
  */
 const tasks = useTasksStore();
-
-const SCOPES = [
-  { value: 'done', label: 'Done' },
-  { value: 'planned', label: 'Planned' },
-] as const;
 
 const OTHER = '\u0000other';
 
@@ -71,34 +65,17 @@ const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
     <header class="view-head head">
       <h2>Effort</h2>
       <span class="muted">Where effort goes, by label</span>
-      <span class="spacer" />
-      <div class="seg" role="radiogroup" aria-label="Show">
-        <button
-          v-for="s in SCOPES"
-          :key="s.value"
-          role="radio"
-          :aria-checked="tasks.reportScope === s.value"
-          :class="{ on: tasks.reportScope === s.value }"
-          @click="tasks.reportScope = s.value"
-        >
-          {{ s.label }}
-        </button>
-      </div>
     </header>
 
     <p v-if="!report.taskCount" class="muted empty">
-      {{
-        tasks.reportScope === 'done'
-          ? 'No Done or archived task has an effort yet.'
-          : 'No planned task has an effort yet.'
-      }}
+      No Done or archived task has an effort yet.
     </p>
 
     <div v-else class="card panel">
       <div class="chart">
         <EffortPie :slices="slices" :active="hover" @hover="(k) => (hover = k)">
           <span class="value">{{ report.total }}</span>
-          <span class="muted caption">effort {{ tasks.reportScope }}</span>
+          <span class="muted caption">effort done</span>
         </EffortPie>
       </div>
       <p class="muted counts">
@@ -136,7 +113,7 @@ const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
         A task with several labels counts in full towards each, so the labels can add up to more
         than the total.
         <template v-if="labelCount > LABEL_COLORS.length">
-          The chart colours the {{ LABEL_COLORS.length }} labels with the most effort overall; the
+          The chart colours the {{ LABEL_COLORS.length }} labels with the most effort; the
           rest share "Other".
         </template>
       </p>

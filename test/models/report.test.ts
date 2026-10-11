@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { effortByLabel, inScope } from '@models/Report';
+import { effortByLabel, isDoneTask } from '@models/Report';
 import { createTask, type Task } from '@models/Task';
 
 function task(id: string, over: Partial<Task>): Task {
@@ -45,21 +45,14 @@ describe('effortByLabel', () => {
   });
 });
 
-describe('inScope', () => {
-  it('done is Done and Archive; planned is everything else', () => {
-    const scope = (status: Task['status']) =>
-      inScope(task('a', { status }), 'done') ? 'done' : 'planned';
-    expect(scope('Done')).toBe('done');
-    expect(scope('Archive')).toBe('done');
-    expect(scope('Scheduled')).toBe('planned');
-    expect(scope('WIP')).toBe('planned');
-    expect(scope('On Hold')).toBe('planned');
-    expect(inScope(task('a', { status: 'On Hold' }), 'planned')).toBe(true);
-  });
-
-  it('Backlog is in neither scope', () => {
-    const t = task('a', { status: 'Backlog' });
-    expect(inScope(t, 'done')).toBe(false);
-    expect(inScope(t, 'planned')).toBe(false);
+describe('isDoneTask', () => {
+  it('is Done and Archive, nothing else', () => {
+    const done = (status: Task['status']) => isDoneTask(task('a', { status }));
+    expect(done('Done')).toBe(true);
+    expect(done('Archive')).toBe(true);
+    expect(done('Scheduled')).toBe(false);
+    expect(done('WIP')).toBe(false);
+    expect(done('On Hold')).toBe(false);
+    expect(done('Backlog')).toBe(false);
   });
 });

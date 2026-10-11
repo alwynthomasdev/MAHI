@@ -3,6 +3,7 @@ import {
   addToDate,
   daysUntil,
   formatDue,
+  formatTimestamp,
   isDateString,
   monthWeeks,
   nextMonday,
@@ -36,6 +37,14 @@ describe('dates', () => {
     expect(formatDue('2026-09-27', now)).toEqual({ text: 'Today', tone: 'today' });
     expect(formatDue('2026-09-28', now)).toEqual({ text: 'Tomorrow', tone: 'soon' });
     expect(formatDue('2026-09-24', now)).toEqual({ text: '3 days overdue', tone: 'overdue' });
+  });
+
+  it('formats a timestamp as its local day', () => {
+    const d = new Date(2026, 9, 2, 20, 7);
+    expect(formatTimestamp(d.toISOString())).toBe(
+      d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
+    );
+    expect(formatTimestamp(d.toISOString())).toContain('2026');
   });
 
   it('weeks start on Monday', () => {

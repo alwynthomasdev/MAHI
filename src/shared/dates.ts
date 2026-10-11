@@ -91,6 +91,15 @@ export function formatDue(value: string, now: Date = new Date()): { text: string
   return { text, tone };
 }
 
+/** The local day of an ISO timestamp as a short absolute date, e.g. "2 Oct 2026". */
+export function formatTimestamp(iso: string): string {
+  return new Date(iso).toLocaleDateString(undefined, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+
 /** The Monday on or before `value` (weeks run Monday–Sunday). */
 export function startOfWeek(value: string): string {
   const d = parseDate(value);

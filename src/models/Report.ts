@@ -1,4 +1,3 @@
-import { isOpenTask } from './Filter';
 import { EFFORT_POINTS, type Task } from './Task';
 
 /**
@@ -6,8 +5,6 @@ import { EFFORT_POINTS, type Task } from './Task';
  * several labels adds its full effort to each, so the rows can add up to more
  * than `total`; a task with no label lands in the unlabelled row.
  */
-
-export type ReportScope = 'done' | 'planned';
 
 export interface LabelEffort {
   /** The label as first spelled; `''` for the unlabelled row. */
@@ -25,13 +22,9 @@ export interface EffortReport {
   taskCount: number;
 }
 
-/**
- * Done = Done / Archive; planned = everything still open (On Hold included).
- * Backlog is in neither.
- */
-export function inScope(task: Task, scope: ReportScope): boolean {
-  if (task.status === 'Backlog') return false;
-  return isOpenTask(task) === (scope === 'planned');
+/** Done or Archive: the tasks the report counts. */
+export function isDoneTask(task: Task): boolean {
+  return task.status === 'Done' || task.status === 'Archive';
 }
 
 /** Labels match case-insensitively, as everywhere else. */

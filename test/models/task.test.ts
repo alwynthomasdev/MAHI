@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { applyPatch, createTask, normalizeLabels, normalizeTask } from '@models/Task';
+import {
+  FALLBACK_CREATED,
+  applyPatch,
+  createTask,
+  normalizeLabels,
+  normalizeTask,
+} from '@models/Task';
 
 const NOW = new Date(2026, 8, 27, 10, 0, 0); // 27 Sep 2026, local
 
@@ -92,12 +98,16 @@ describe('normalizeTask', () => {
     expect(t.deletedAt).toBe(NOW.toISOString());
   });
 
-  it('keeps created; a missing one takes updated, else now', () => {
+  it('keeps created; a missing or bad one becomes 1 Oct 2026', () => {
     const stamp = '2026-01-02T03:04:05.000Z';
+    expect(FALLBACK_CREATED).toBe(new Date(2026, 9, 1).toISOString());
     expect(normalizeTask({ title: 'X', created: stamp }, 'fb', NOW).created).toBe(stamp);
-    expect(normalizeTask({ title: 'X', updated: stamp }, 'fb', NOW).created).toBe(stamp);
+    expect(normalizeTask({ title: 'X' }, 'fb', NOW).created).toBe(FALLBACK_CREATED);
+    expect(normalizeTask({ title: 'X', updated: stamp }, 'fb', NOW).created).toBe(
+      FALLBACK_CREATED,
+    );
     expect(normalizeTask({ title: 'X', created: 'nope' }, 'fb', NOW).created).toBe(
-      NOW.toISOString(),
+      FALLBACK_CREATED,
     );
   });
 

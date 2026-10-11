@@ -31,14 +31,15 @@ task tracker (Electron + Vue 3), a simplified sibling of
   the day's total against a daily limit (12 by default): green, amber above
   70% of the limit, red above it. Done tasks still count; On Hold, Backlog and
   archived tasks do not. It is a guide to whether a day is overloaded; nothing is blocked.
-- **Effort tab**: a pie chart and table of where effort goes, by label. Toggle
-  between **Done** (Done and archived tasks) and **Planned** (everything else).
-  Tasks with no effort are left out; a task with several labels counts in full
+- **Effort tab**: a pie chart and table of where the effort of Done and
+  archived tasks went, by label. Tasks with no effort are left out; a task with several labels counts in full
   towards each; tasks with no label show as "No label".
 - **Settings**: light / dark / system theme, daily effort limit, data folder,
   import / export (choose which statuses to export), and **Check for updates**.
 
 Click any task to edit its title, description, priority, status, effort, due date and labels.
+The dialog also shows when the task was created; a task file with no created
+date is taken as created on 1 October 2026.
 
 ## Data on disk
 

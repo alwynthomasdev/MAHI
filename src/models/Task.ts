@@ -3,7 +3,7 @@ import { isDateString, todayDate } from '@shared/dates';
 export const PRIORITIES = ['Lowest', 'Low', 'Medium', 'High', 'Highest'] as const;
 export type Priority = (typeof PRIORITIES)[number];
 
-export const STATUSES = ['Backlog', 'Scheduled','WIP', 'On Hold', 'Done', 'Archive'] as const;
+export const STATUSES = ['Backlog', 'Scheduled', 'WIP', 'On Hold', 'Done', 'Archive'] as const;
 export type Status = (typeof STATUSES)[number];
 
 export const EFFORTS = ['None', 'Easy', 'Moderate', 'Hard'] as const;
@@ -138,18 +138,21 @@ function isTimestamp(v: unknown): v is string {
   return typeof v === 'string' && !Number.isNaN(Date.parse(v));
 }
 
+/** What a task with no usable `created` is taken to have: 1 Oct 2026, local midnight. */
+export const FALLBACK_CREATED = new Date(2026, 9, 1).toISOString();
+
 /**
  * Coerce an untrusted object (a file on disk, an import) into a Task. Bad or
  * missing fields fall back to defaults rather than throwing; only a missing
  * title is fatal. `id` comes from the object when it is a non-empty string,
- * otherwise from `fallbackId`. A missing `created` takes `updated`, else now;
- * `TaskRepository` writes that back so it never moves again.
+ * otherwise from `fallbackId`. A missing `created` becomes `FALLBACK_CREATED`;
+ * `TaskRepository` writes that back to the file.
  */
 export function normalizeTask(raw: unknown, fallbackId: string, now: Date = new Date()): Task {
   if (!raw || typeof raw !== 'object') throw new Error('Task must be an object.');
   const r = raw as Record<string, unknown>;
   const updated = isTimestamp(r.updated) ? r.updated : undefined;
-  const created = isTimestamp(r.created) ? r.created : (updated ?? now.toISOString());
+  const created = isTimestamp(r.created) ? r.created : FALLBACK_CREATED;
   const task: Task = {
     id: typeof r.id === 'string' && r.id.trim() ? r.id.trim() : fallbackId,
     title: requireTitle(r.title),

@@ -19,7 +19,7 @@ const THEMES: { value: Theme; label: string }[] = [
 ];
 
 const version = ref('');
-const exportStatuses = ref<Status[]>(['Backlog', 'Scheduled','WIP', 'On Hold', 'Done']);
+const exportStatuses = ref<Status[]>(['Backlog', 'Scheduled', 'WIP', 'On Hold', 'Done']);
 const ioMsg = ref<string | null>(null);
 const dirMsg = ref<string | null>(null);
 const limitMsg = ref<string | null>(null);
