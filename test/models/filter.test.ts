@@ -52,6 +52,15 @@ describe('isTodayTask', () => {
     expect(tasks.filter((t) => isTodayTask(t, today)).map((t) => t.id)).toEqual(['Bravo report']);
     expect(isTodayTask(task('x', { due: today }), today)).toBe(true);
   });
+
+  it('excludes Backlog whatever the due date', () => {
+    const today = '2026-09-27';
+    for (const due of ['2026-09-20', today]) {
+      const t = task('x', { due, status: 'Backlog' });
+      expect(isTodayTask(t, today)).toBe(false);
+      expect(isOpenTask(t)).toBe(false);
+    }
+  });
 });
 
 describe('isOpenTask / groupByDue', () => {

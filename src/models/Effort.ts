@@ -22,10 +22,10 @@ export function totalEffort(tasks: Task[]): number {
 
 /**
  * Whether a task adds to its day's load. Done counts — the work was still
- * done that day. On Hold (parked) and Archive do not.
+ * done that day. On Hold and Backlog (parked) and Archive do not.
  */
 export function countsForEffort(task: Task): boolean {
-  return task.status !== 'On Hold' && task.status !== 'Archive';
+  return task.status !== 'On Hold' && task.status !== 'Backlog' && task.status !== 'Archive';
 }
 
 /** Each due date's load (`YYYY-MM-DD` -> points); days with nothing counted are absent. */

@@ -3,7 +3,7 @@ import { isDateString, todayDate } from '@shared/dates';
 export const PRIORITIES = ['Lowest', 'Low', 'Medium', 'High', 'Highest'] as const;
 export type Priority = (typeof PRIORITIES)[number];
 
-export const STATUSES = ['Scheduled', 'WIP', 'On Hold', 'Done', 'Archive'] as const;
+export const STATUSES = ['Backlog', 'Scheduled','WIP', 'On Hold', 'Done', 'Archive'] as const;
 export type Status = (typeof STATUSES)[number];
 
 export const EFFORTS = ['None', 'Easy', 'Moderate', 'Hard'] as const;

@@ -6,6 +6,21 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Backlog status for parking a task. Whatever its due date, a Backlog task
+  stays off Today, List, Swimlanes and the Calendar, and adds nothing to any
+  effort total: not the daily load on Today, the Calendar or Swimlanes, and
+  neither Done nor Planned on the Effort tab.
+- Backlog tab, before Archive on the menu, listing these tasks highest
+  priority first, without the due date. "Schedule" brings a task back as
+  Scheduled, due today if its date has passed; "Delete" moves it to the
+  recycle bin.
+
+### Changed
+
+- Export in Settings includes Backlog tasks by default.
+
 ## [1.5.0] - 2026-10-05
 
 Move several tasks at once in the Calendar week view, a Postpone that counts

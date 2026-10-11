@@ -7,7 +7,7 @@ import MultiSelect from './MultiSelect.vue';
 
 /** Search / filter / order-by controls for the List view (drives the tasks store). */
 const tasks = useTasksStore();
-const listStatuses = STATUSES.filter((s) => s !== 'Archive');
+const listStatuses = STATUSES.filter((s) => s !== 'Archive' && s !== 'Backlog');
 
 const text = computed({
   get: () => tasks.filter.text ?? '',

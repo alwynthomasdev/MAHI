@@ -56,4 +56,10 @@ describe('inScope', () => {
     expect(scope('On Hold')).toBe('planned');
     expect(inScope(task('a', { status: 'On Hold' }), 'planned')).toBe(true);
   });
+
+  it('Backlog is in neither scope', () => {
+    const t = task('a', { status: 'Backlog' });
+    expect(inScope(t, 'done')).toBe(false);
+    expect(inScope(t, 'planned')).toBe(false);
+  });
 });

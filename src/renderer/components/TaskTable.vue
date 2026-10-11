@@ -13,11 +13,11 @@ import { EFFORT_COLOR, PRIORITY_COLOR, STATUS_COLOR } from '../lib/colors';
 import PillSelect from './PillSelect.vue';
 
 /**
- * The shared task list used by Today, List and Archive. Priority, status and
- * effort are editable inline; clicking a row opens it. The `actions` slot adds
- * per-row buttons (postpone, delete, …).
+ * The shared task list used by Today, List, Backlog and Archive. Priority,
+ * status and effort are editable inline; clicking a row opens it. The `actions`
+ * slot adds per-row buttons (postpone, delete, …). `hideDue` drops the due date.
  */
-defineProps<{ tasks: Task[]; empty?: string }>();
+defineProps<{ tasks: Task[]; empty?: string; hideDue?: boolean }>();
 const emit = defineEmits<{
   open: [task: Task];
   priority: [task: Task, value: Priority];
@@ -43,7 +43,7 @@ const emit = defineEmits<{
           <span v-for="l in t.labels" :key="l" class="label">{{ l }}</span>
         </div>
       </div>
-      <span class="due" :class="formatDue(t.due).tone" :title="t.due">{{
+      <span v-if="!hideDue" class="due" :class="formatDue(t.due).tone" :title="t.due">{{
         formatDue(t.due).text
       }}</span>
       <PillSelect

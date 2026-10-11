@@ -77,12 +77,12 @@ export function filterAndSort(tasks: Task[], filter: TaskFilter, sort: TaskSort)
   );
 }
 
-/** Still to do: not Done / Archive. */
+/** Still to do and in play: not Done / Archive, and not parked in the Backlog. */
 export function isOpenTask(task: Task): boolean {
-  return task.status !== 'Done' && task.status !== 'Archive';
+  return task.status !== 'Done' && task.status !== 'Archive' && task.status !== 'Backlog';
 }
 
-/** Today view: due today or earlier, and not Done / Archive. */
+/** Today view: due today or earlier, and not Done / Archive / Backlog. */
 export function isTodayTask(task: Task, today: string): boolean {
   return task.due <= today && isOpenTask(task);
 }

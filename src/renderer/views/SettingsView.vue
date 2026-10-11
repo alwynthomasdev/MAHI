@@ -19,7 +19,7 @@ const THEMES: { value: Theme; label: string }[] = [
 ];
 
 const version = ref('');
-const exportStatuses = ref<Status[]>(['Scheduled', 'WIP', 'On Hold', 'Done']);
+const exportStatuses = ref<Status[]>(['Backlog', 'Scheduled','WIP', 'On Hold', 'Done']);
 const ioMsg = ref<string | null>(null);
 const dirMsg = ref<string | null>(null);
 const limitMsg = ref<string | null>(null);
@@ -149,7 +149,7 @@ async function checkUpdates() {
       <h3>Daily effort</h3>
       <p class="muted">
         Each task adds its effort to the day it is due: Easy 1, Moderate 2, Hard 3. Done tasks still
-        count; On Hold and archived tasks do not. Today, the Calendar and the Today &amp; overdue
+        count; On Hold, Backlog and archived tasks do not. Today, the Calendar and the Today &amp; overdue
         swimlanes flag a day amber above 70% of this limit and red above it. It is only a guide —
         nothing is blocked.
       </p>

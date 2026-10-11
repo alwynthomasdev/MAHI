@@ -8,7 +8,7 @@ import SnoozeMenu from '../SnoozeMenu.vue';
 /**
  * The open tasks on the selected day, as in the Today tab. Today's list
  * includes overdue tasks — they fall into the current day. The effort badge
- * is this date's load, as in Month and Week: Done included and On Hold left
+ * is this date's load, as in Month and Week: Done included, On Hold left
  * out, so it need not match the list below.
  */
 const tasks = useTasksStore();

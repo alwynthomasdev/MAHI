@@ -1,6 +1,7 @@
 import type { Effort, Priority, Status } from '@models/Task';
 
 export const STATUS_COLOR: Record<Status, string> = {
+  Backlog: 'var(--backlog)',
   Scheduled: 'var(--scheduled)',
   WIP: 'var(--wip)',
   'On Hold': 'var(--onhold)',

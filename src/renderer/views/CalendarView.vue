@@ -8,7 +8,7 @@ import CalendarDay from '../components/calendar/CalendarDay.vue';
 
 /**
  * Month (counts per day) · Week (a lane per day, drag to reschedule) · Day
- * (a task list). Only open tasks — Done and Archive are left out. It looks
+ * (a task list). Only open tasks — Done, Archive and Backlog are left out. It looks
  * forward only: past days are blank and out of reach, and overdue tasks fall
  * into today. Mode and date live in the store so they survive switching tabs.
  */

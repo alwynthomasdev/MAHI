@@ -6,16 +6,21 @@ task tracker (Electron + Vue 3), a simplified sibling of
 
 ## Features
 
-- **Today**: tasks due today or overdue that aren't Done or Archived. Change
+- **Today**: tasks due today or overdue that aren't Done, Archived or in the
+  Backlog. Change
   priority and status inline, or move a task with **Postpone** (Today,
   Tomorrow, 3 days, next Monday, 1 week, 1 month). Away from today the presets
   count from the day the task is on, not from today.
 - **Calendar week**: drag a card to another day to reschedule it. Tick several
   cards to drag them together, or to postpone them all from the bar above.
-- **List**: everything not archived, with title search, status / priority /
+- **List**: everything not archived or in the backlog, with title search, status / priority /
   label filters, and order by due date, priority, title, created or updated.
 - **Swimlanes**: Scheduled · WIP · On Hold · Done. Drag cards between lanes;
   Done cards have a one-click **Archive** button.
+- **Backlog**: give a task the Backlog status to park it. Whatever its due
+  date, it stays off Today, List, Swimlanes and the Calendar and adds nothing
+  to any effort total; it lives on the Backlog tab, where **Schedule** brings
+  it back (due today if its date has passed).
 - **Archive** and **Recycle bin**: deleting is soft, so you can restore,
   delete forever or empty the bin.
 - **Add task window**: the **+ Add task** button (top right, or Ctrl+N) opens a
@@ -24,8 +29,8 @@ task tracker (Electron + Vue 3), a simplified sibling of
 - **Effort**: give a task an effort of None (0), Easy (1), Moderate (2) or
   Hard (3). Today, every Calendar day and the Today & overdue swimlanes show
   the day's total against a daily limit (12 by default): green, amber above
-  70% of the limit, red above it. Done tasks still count; On Hold and archived
-  tasks do not. It is a guide to whether a day is overloaded; nothing is blocked.
+  70% of the limit, red above it. Done tasks still count; On Hold, Backlog and
+  archived tasks do not. It is a guide to whether a day is overloaded; nothing is blocked.
 - **Effort tab**: a pie chart and table of where effort goes, by label. Toggle
   between **Done** (Done and archived tasks) and **Planned** (everything else).
   Tasks with no effort are left out; a task with several labels counts in full

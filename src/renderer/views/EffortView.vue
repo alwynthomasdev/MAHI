@@ -7,8 +7,8 @@ import EffortPie, { type PieSlice } from '../components/EffortPie.vue';
 
 /**
  * Where effort goes, by label: a pie and a table, for what is done (Done and
- * Archive) or what is planned (everything else). Tasks with no effort are left
- * out. A task with several labels counts in full towards each, so shares are
+ * Archive) or what is planned (everything else bar Backlog). Tasks with no
+ * effort are left out. A task with several labels counts in full towards each, so shares are
  * of the labelled effort, not of the total. The toggle lives in the store so it
  * survives switching tabs.
  */

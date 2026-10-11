@@ -23,12 +23,13 @@ describe('which tasks count', () => {
   const on = (due: string, status: Status, effort: Effort = 'Hard') =>
     createTask({ title: 'T', due, status, effort }, 'id');
 
-  it('counts Done but not On Hold or Archive', () => {
+  it('counts Done but not On Hold, Backlog or Archive', () => {
     const byDue = effortByDue([
       on('2026-10-02', 'Scheduled', 'Easy'),
       on('2026-10-02', 'WIP', 'Moderate'),
       on('2026-10-02', 'Done'),
       on('2026-10-02', 'On Hold'),
+      on('2026-10-02', 'Backlog'),
       on('2026-10-02', 'Archive'),
       on('2026-10-03', 'On Hold'),
     ]);
@@ -36,14 +37,16 @@ describe('which tasks count', () => {
     expect(byDue.has('2026-10-03')).toBe(false);
   });
 
-  it('adds overdue work still to do to today, but not overdue Done or On Hold', () => {
+  it('adds overdue work still to do to today, but not overdue Done, On Hold or Backlog', () => {
     const tasks = [
       on('2026-10-02', 'Scheduled', 'Easy'),
       on('2026-10-02', 'Done', 'Moderate'),
       on('2026-10-02', 'On Hold'),
+      on('2026-10-02', 'Backlog'),
       on('2026-10-01', 'WIP'),
       on('2026-10-01', 'Done'),
       on('2026-10-01', 'On Hold'),
+      on('2026-10-01', 'Backlog'),
       on('2026-10-03', 'Scheduled'),
     ];
     expect(todayEffort(tasks, '2026-10-02')).toBe(6);

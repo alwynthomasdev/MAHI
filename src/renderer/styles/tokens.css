@@ -19,6 +19,7 @@
   --accent-contrast: #ffffff;
 
   /* status — identical in both themes */
+  --backlog: #6f7f8c;
   --scheduled: #4f8ff0;
   --wip: #c9a227;
   --onhold: #b4783a;

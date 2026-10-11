@@ -25,8 +25,12 @@ export interface EffortReport {
   taskCount: number;
 }
 
-/** Done = Done / Archive; planned = everything still open (On Hold included). */
+/**
+ * Done = Done / Archive; planned = everything still open (On Hold included).
+ * Backlog is in neither.
+ */
 export function inScope(task: Task, scope: ReportScope): boolean {
+  if (task.status === 'Backlog') return false;
   return isOpenTask(task) === (scope === 'planned');
 }
 

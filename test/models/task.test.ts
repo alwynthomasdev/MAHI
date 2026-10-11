@@ -56,6 +56,15 @@ describe('applyPatch', () => {
   });
 });
 
+describe('Backlog status', () => {
+  it('is accepted on create, patch and read', () => {
+    expect(createTask({ title: 'A', status: 'Backlog' }, 'a', NOW).status).toBe('Backlog');
+    const base = createTask({ title: 'A' }, 'a', NOW);
+    expect(applyPatch(base, { status: 'Backlog' }, NOW).status).toBe('Backlog');
+    expect(normalizeTask({ title: 'A', status: 'Backlog' }, 'a', NOW).status).toBe('Backlog');
+  });
+});
+
 describe('normalizeTask', () => {
   it('falls back to defaults on bad values', () => {
     const t = normalizeTask(

@@ -44,7 +44,7 @@ export const useTasksStore = defineStore('tasks', {
     editing: null as Task | null,
   }),
   getters: {
-    /** Due today or overdue, not Done/Archive — overdue first, then priority. */
+    /** Due today or overdue, not Done/Archive/Backlog — overdue first, then priority. */
     todayTasks(state): Task[] {
       return sortTasks(
         state.items.filter((t) => isTodayTask(t, state.today)),
@@ -54,16 +54,16 @@ export const useTasksStore = defineStore('tasks', {
     overdueCount(): number {
       return this.todayTasks.filter((t) => t.due < this.today).length;
     },
-    /** List view: everything not archived, filtered + sorted. */
+    /** List view: everything not archived or in the backlog, filtered + sorted. */
     listTasks(state): Task[] {
       return filterAndSort(
-        state.items.filter((t) => t.status !== 'Archive'),
+        state.items.filter((t) => t.status !== 'Archive' && t.status !== 'Backlog'),
         state.filter,
         state.sort,
       );
     },
     /**
-     * Calendar: open (not Done/Archive) tasks by due date, each day sorted by
+     * Calendar: open (not Done/Archive/Backlog) tasks by due date, each day sorted by
      * priority. Overdue tasks fall into today; past days hold nothing.
      */
     openByDue(state): Map<string, Task[]> {
@@ -73,8 +73,8 @@ export const useTasksStore = defineStore('tasks', {
       );
     },
     /**
-     * Calendar: effort points per due date from today on; On Hold and Archive
-     * are left out, Done counts. Today carries the overdue work still to do.
+     * Calendar: effort points per due date from today on; On Hold, Backlog and
+     * Archive are left out, Done counts. Today carries the overdue work still to do.
      */
     effortByDue(state): Map<string, number> {
       const map = new Map<string, number>();
@@ -95,14 +95,21 @@ export const useTasksStore = defineStore('tasks', {
     },
     /**
      * Effort view: the labels that get a colour of their own (by `labelKey`),
-     * in palette order. Ranked on all tasks, done and planned, so a label keeps
-     * its colour across the toggle; the rest fold into "Other".
+     * in palette order. Ranked on all tasks, done and planned (Backlog aside),
+     * so a label keeps its colour across the toggle; the rest fold into "Other".
      */
     chartLabels(state): string[] {
-      return effortByLabel(state.items)
+      return effortByLabel(state.items.filter((t) => t.status !== 'Backlog'))
         .rows.filter((r) => r.label)
         .slice(0, LABEL_COLORS.length)
         .map((r) => labelKey(r.label));
+    },
+    /** Backlog view: parked tasks, highest priority first. */
+    backlog(state): Task[] {
+      return sortTasks(
+        state.items.filter((t) => t.status === 'Backlog'),
+        { key: 'priority', dir: 'desc' },
+      );
     },
     archived(state): Task[] {
       return sortTasks(
@@ -144,6 +151,14 @@ export const useTasksStore = defineStore('tasks', {
       const task = await call(mahi.tasks.update(id, patch));
       this.upsert(task);
       return task;
+    },
+    /** Pull a task out of the backlog: Scheduled, due today if its date has passed. */
+    async schedule(id: string) {
+      const task = this.items.find((t) => t.id === id);
+      if (!task) return;
+      const patch: TaskPatch = { status: 'Scheduled' };
+      if (task.due < this.today) patch.due = this.today;
+      await this.update(id, patch);
     },
     /** Give every listed task the same due date. */
     async moveTo(ids: string[], due: string) {
