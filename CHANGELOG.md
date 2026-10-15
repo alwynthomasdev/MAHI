@@ -6,6 +6,18 @@ All notable changes to MAHI are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-10-15
+
+New tasks from the Add Task window go to the Backlog by default.
+
+### Added
+
+- "Backlog" checkbox in the Add Task window, ticked by default. While it is
+  ticked, new tasks are created with status Backlog, so they stay off Today
+  and out of every effort total until you schedule them. Untick it to create
+  Scheduled tasks due today, as before. The hint under the title shows which
+  status will be used.
+
 ## [1.6.0] - 2026-10-11
 
 A Backlog for parking tasks out of the way, an Effort tab that only reports
