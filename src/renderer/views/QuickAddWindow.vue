@@ -5,11 +5,13 @@ import { useSettingsStore } from '../stores/settings';
 
 /**
  * The only view in the standalone Add Task window. Title only — everything
- * else takes its default. The window stays open after each add, ready for the
+ * else takes its default, except status: the "Backlog" box (on by default)
+ * parks new tasks in the Backlog instead of scheduling them. The window stays open after each add, ready for the
  * next; the main window refreshes via the tasks:changed broadcast.
  */
 const settings = useSettingsStore();
 const title = ref('');
+const toBacklog = ref(true);
 const busy = ref(false);
 const flash = ref<string | null>(null);
 const error = ref<string | null>(null);
@@ -31,7 +33,7 @@ async function add() {
   busy.value = true;
   error.value = null;
   try {
-    await call(mahi.tasks.create({ title: t }));
+    await call(mahi.tasks.create(toBacklog.value ? { title: t, status: 'Backlog' } : { title: t }));
     title.value = '';
     flash.value = `Added “${t}”`;
     clearTimeout(flashTimer);
@@ -52,7 +54,13 @@ function onKeydown(e: KeyboardEvent) {
 
 <template>
   <form class="quick" @submit.prevent="add" @keydown="onKeydown">
-    <label class="lbl" for="qa-title">Add task</label>
+    <div class="head">
+      <label class="lbl" for="qa-title">Add task</label>
+      <label class="backlog" title="Park new tasks in the Backlog">
+        <input v-model="toBacklog" type="checkbox" />
+        Backlog
+      </label>
+    </div>
     <div class="row">
       <input
         id="qa-title"
@@ -64,7 +72,11 @@ function onKeydown(e: KeyboardEvent) {
       <button type="submit" class="primary" :disabled="!title.trim() || busy">Add</button>
     </div>
     <p class="status" :class="{ err: error }">
-      {{ error ?? flash ?? 'Enter to add · due today · Medium · Scheduled' }}
+      {{
+        error ??
+        flash ??
+        `Enter to add · due today · Medium · ${toBacklog ? 'Backlog' : 'Scheduled'}`
+      }}
     </p>
   </form>
 </template>
@@ -83,7 +95,24 @@ function onKeydown(e: KeyboardEvent) {
   font-size: var(--fs-md);
   color: var(--text-dim);
 }
-input {
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.backlog {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  cursor: pointer;
+  user-select: none;
+}
+.backlog input {
+  margin: 0;
+}
+#qa-title {
   flex: 1;
   font-size: 14px;
   padding: 8px 10px;
